@@ -1,0 +1,91 @@
+/* Design tokens, taken from the Wraithgrid app. Dark is the default; public/theme-init.js sets
+   data-theme="light" before first paint when the visitor (or their OS) prefers it. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0a0a12;
+  --bg2: #0e0e18;
+  --panel: #11111c;
+  --raise: #171727;
+  --line: #232338;
+  --line-strong: #30304c;
+  --text: #e7e6f2;
+  --muted: #aeadc6;
+  --faint: #8a89a8;
+  --accent: #7c5cff;
+  --accent-text: #a996ff;
+  /* Button fill: #7c5cff under white text is 4.35:1, below AA; this is 5.08:1. */
+  --accent-strong: #6b4dff;
+  --accent-strong-hover: #5d3ef5;
+  --accent-soft: rgb(124 92 255 / 0.12);
+  --on-accent: #ffffff;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --warn-soft: rgb(251 191 36 / 0.08);
+  --err: #fb7185;
+  --terminal: #0c0c15;
+  --focus: #a996ff;
+  --glass-bg: rgb(17 17 28 / 0.55);
+  --glass-bg-strong: rgb(17 17 28 / 0.78);
+  --glass-line: rgb(255 255 255 / 0.08);
+  --glass-highlight: rgb(255 255 255 / 0.06);
+  --grid-line: rgb(124 92 255 / 0.07);
+  --backdrop: rgb(5 5 10 / 0.8);
+
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --container: 1120px;
+  --gutter: 16px;
+  --nav-h: 60px;
+  /* Space the fixed, floating nav takes at the top: 2 rows on phones, 1 from 760px. */
+  --nav-space: 116px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 760px) {
+  :root {
+    --nav-space: 84px;
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f5f4fa;
+  --bg2: #ecebf4;
+  --panel: #ffffff;
+  --raise: #f1f0f8;
+  --line: #dcdae8;
+  --line-strong: #c9c6db;
+  --text: #17162a;
+  --muted: #43415c;
+  --faint: #585673;
+  --accent: #7c5cff;
+  --accent-text: #5a3de0;
+  --accent-strong: #5a3de0;
+  --accent-strong-hover: #4c30cc;
+  --accent-soft: rgb(90 61 224 / 0.08);
+  --on-accent: #ffffff;
+  --ok: #15803d;
+  --warn: #a16207;
+  --warn-soft: rgb(161 98 7 / 0.07);
+  --err: #be123c;
+  --terminal: #fbfaff;
+  --focus: #5a3de0;
+  --glass-bg: rgb(255 255 255 / 0.55);
+  --glass-bg-strong: rgb(255 255 255 / 0.8);
+  --glass-line: rgb(23 22 42 / 0.08);
+  --glass-highlight: rgb(255 255 255 / 0.7);
+  --grid-line: rgb(90 61 224 / 0.07);
+  --backdrop: rgb(23 22 42 / 0.55);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gutter: 24px;
+  }
+}

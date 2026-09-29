@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://api.github.com; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wraithgrid: many claude CLI sessions, side by side</title>
+    <meta
+      name="description"
+      content="Run many claude CLI sessions side by side, each with its own account and project folder. A free, open-source desktop app for Windows and Linux."
+    />
+    <link rel="canonical" href="%SITE_URL%" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a12" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f4fa" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Wraithgrid" />
+    <meta property="og:title" content="Wraithgrid: many claude CLI sessions, side by side" />
+    <meta
+      property="og:description"
+      content="Run many claude CLI sessions side by side, each with its own account and project folder."
+    />
+    <meta property="og:url" content="%SITE_URL%" />
+    <meta property="og:image" content="%SITE_URL%screenshots/grid-dark.png" />
+    <meta property="og:image:width" content="1908" />
+    <meta property="og:image:height" content="1023" />
+    <meta
+      property="og:image:alt"
+      content="Wraithgrid window with four claude CLI panes in a 2×2 grid, each signed in to a different account"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Wraithgrid: many claude CLI sessions, side by side" />
+    <meta
+      name="twitter:description"
+      content="Run many claude CLI sessions side by side, each with its own account and project folder."
+    />
+    <meta name="twitter:image" content="%SITE_URL%screenshots/grid-dark.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Wraithgrid",
+        "description": "Run many claude CLI sessions side by side, each with its own account and project folder.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows, Linux",
+        "license": "https://opensource.org/licenses/MIT",
+        "url": "%SITE_URL%",
+        "downloadUrl": "https://github.com/cachewraith/wraithgrid/releases/latest",
+        "codeRepository": "https://github.com/cachewraith/wraithgrid",
+        "screenshot": "%SITE_URL%screenshots/grid-dark.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <!-- Sets data-theme and preloads the matching hero image before first paint. -->
+    <script src="%BASE_URL%theme-init.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p class="noscript">
+        Wraithgrid runs many claude CLI sessions side by side, each with its own account and project
+        folder.
+        <a href="https://github.com/cachewraith/wraithgrid/releases/latest">Download it on GitHub</a
+        >.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
