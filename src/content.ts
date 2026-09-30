@@ -13,7 +13,7 @@ export interface Shot {
 }
 
 export const HERO_ALT =
-  'Wraithgrid with four claude CLI panes in a 2×2 grid. Each pane shows its own account, project folder and status: running, or waiting for approval.'
+  'Wraithgrid with four claude CLI panes in a 2×2 grid. Each pane shows its own account, project folder and status: running, idle, or waiting for approval. The sidebar groups accounts into a Work folder, each with its own emoji icon.'
 
 export const GALLERY: readonly Shot[] = [
   {
@@ -24,17 +24,17 @@ export const GALLERY: readonly Shot[] = [
   {
     name: 'accounts',
     title: 'Accounts',
-    alt: 'The Accounts page listing four accounts, each with its own config directory, login status and number of open panes.',
+    alt: 'The Accounts page listing four accounts, each with its own emoji icon, config directory, login status and number of open panes. Every account shares CLAUDE.md, skills and plugins from ~/.claude.',
   },
   {
     name: 'settings',
     title: 'Settings',
-    alt: 'The Settings page with the theme switch, five accent colours, terminal palettes such as Dracula, Nord and Tokyo Night, the terminal font, and the update check.',
+    alt: 'The Settings page with the shared ~/.claude switch (Overall or Each account its own), the theme switch, five accent colours, terminal palettes such as Dracula, Nord and Tokyo Night, and the terminal font.',
   },
   {
     name: 'grid-light',
     title: 'Light theme',
-    alt: 'The same four-pane grid in the light theme.',
+    alt: 'The same four-pane grid in the light theme with the teal accent.',
   },
 ]
 
@@ -68,18 +68,18 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     icon: 'workspaces',
-    title: 'Workspaces',
-    body: 'Keep several workspaces and switch between them with Ctrl+Shift+1…9.',
+    title: 'Workspaces, folders & icons',
+    body: 'Switch workspaces with Ctrl+Shift+1…9. Drag accounts into sidebar folders, give accounts and workspaces an emoji icon, and right-click either to rename or delete it.',
   },
   {
     icon: 'status',
     title: 'Live pane status',
-    body: 'Every pane shows whether it is running, idle, or waiting for your approval.',
+    body: 'Every pane shows whether claude is running (animated), idle, or waiting for your approval.',
   },
   {
     icon: 'shared',
-    title: 'Shared CLAUDE.md and skills',
-    body: 'Optionally link one CLAUDE.md and one skills/ folder into every account.',
+    title: 'One claude setup everywhere',
+    body: 'Every account uses the CLAUDE.md, settings, skills, plugins, agents and commands from your ~/.claude, or each keeps its own. Logins stay separate.',
   },
   {
     icon: 'restore',
@@ -93,8 +93,8 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     icon: 'updates',
-    title: 'Update check',
-    body: 'Checks GitHub Releases for a newer version and tells you when there is one.',
+    title: 'One-click updates',
+    body: 'A desktop notification tells you once when a new version is out. Update & restart in Settings installs it in place.',
   },
   {
     icon: 'private',
@@ -109,6 +109,9 @@ export const SHORTCUTS: readonly { action: string; keys: readonly string[] }[] =
   { action: 'Zoom pane', keys: ['Ctrl', 'Shift', 'Z'] },
   { action: 'Move focus', keys: ['Ctrl', 'Alt', 'Arrow'] },
   { action: 'Switch workspace', keys: ['Ctrl', 'Shift', '1…9'] },
+  { action: 'New line in claude', keys: ['Shift', 'Enter'] },
+  { action: 'Terminal text bigger / smaller', keys: ['Ctrl', '= / -'] },
+  { action: 'Reset terminal text size', keys: ['Ctrl', '0'] },
   { action: 'All shortcuts', keys: ['Ctrl', 'Shift', '/'] },
 ]
 
@@ -132,7 +135,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Does it update itself?',
-    a: 'It checks GitHub Releases and tells you when a new version is out. You download and install the new package yourself.',
+    a: 'Yes, from v1.3.0 on. When a new version is out you get a desktop notification, and Update & restart in Settings downloads it, checks it, installs it over the current one and relaunches. On Linux the .deb, .rpm and pacman packages ask for your password. Versions 1.2.0 and older must be updated by hand once.',
   },
   {
     q: 'Is it free?',
