@@ -298,9 +298,33 @@
 }
 
 .hero-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 8px;
   margin-top: 16px;
   color: var(--faint);
   font-size: 14px;
+}
+
+.hero-foot > span {
+  white-space: nowrap;
+}
+
+/* Up to here the count can wrap onto a second line when it arrives; reserve that line up front,
+   as .cta-primary does for the version, so the hero screenshot doesn't shift. */
+@media (max-width: 559px) {
+  .hero-foot {
+    min-height: calc(2 * 1.6em);
+  }
+}
+
+/* The download count arrives after the GitHub fetch as a third item; the dots are CSS so the
+   list reads the same with or without it. */
+.hero-foot > span + span::before {
+  content: '·';
+  content: '·' / '';
+  margin-right: 8px;
 }
 
 .hero-shot {

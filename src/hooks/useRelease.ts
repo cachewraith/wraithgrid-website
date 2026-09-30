@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
-import { fetchLatestRelease, type Release } from '../lib/release'
+import { fetchReleaseInfo, type ReleaseInfo } from '../lib/release'
 
 // One request per page load, shared by every caller (and by StrictMode's double effect).
-let pending: Promise<Release | null> | null = null
+let pending: Promise<ReleaseInfo | null> | null = null
 
-/** null while loading or after any failure; buttons link to the releases page until it resolves. */
-export function useRelease(): Release | null {
-  const [release, setRelease] = useState<Release | null>(null)
+/**
+ * null while loading or after any failure; buttons link to the releases page and the download
+ * counter stays hidden until it resolves.
+ */
+export function useReleaseInfo(): ReleaseInfo | null {
+  const [info, setInfo] = useState<ReleaseInfo | null>(null)
   useEffect(() => {
     let alive = true
-    pending ??= fetchLatestRelease()
+    pending ??= fetchReleaseInfo()
     void pending.then((r) => {
-      if (alive) setRelease(r)
+      if (alive) setInfo(r)
     })
     return () => {
       alive = false
     }
   }, [])
-  return release
+  return info
 }

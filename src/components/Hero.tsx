@@ -1,6 +1,6 @@
 import { HERO_ALT } from '../content'
 import type { OS } from '../lib/os'
-import { RELEASES_URL, downloadHref, type Release } from '../lib/release'
+import { RELEASES_URL, downloadHref, formatDownloads, type Release } from '../lib/release'
 import { sectionPath } from '../lib/sections'
 import type { ResolvedTheme } from '../lib/theme'
 import { ExternalLink } from './ExternalLink'
@@ -10,6 +10,8 @@ import { Screenshot } from './Screenshot'
 interface Props {
   os: OS
   release: Release | null
+  /** Installer downloads over all releases; null while loading or when GitHub can't be read. */
+  downloads: number | null
   theme: ResolvedTheme
 }
 
@@ -18,7 +20,7 @@ function hasLinuxBuild(release: Release | null): boolean {
   return Boolean(a?.deb ?? a?.rpm ?? a?.pacman ?? a?.appimage)
 }
 
-function PrimaryDownload({ os, release }: Omit<Props, 'theme'>) {
+function PrimaryDownload({ os, release }: Pick<Props, 'os' | 'release'>) {
   if (os === 'windows') {
     return (
       <div className="cta-primary">
@@ -52,7 +54,7 @@ function PrimaryDownload({ os, release }: Omit<Props, 'theme'>) {
   )
 }
 
-export function Hero({ os, release, theme }: Props) {
+export function Hero({ os, release, downloads, theme }: Props) {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="container">
@@ -74,7 +76,13 @@ export function Hero({ os, release, theme }: Props) {
           </ExternalLink>
         </div>
         <p className="hero-foot" data-intro="5">
-          Free and open source (MIT). Requires the claude CLI.
+          <span>Free and open source (MIT)</span>
+          <span>Requires the claude CLI</span>
+          {downloads !== null && (
+            <span title="Installer downloads across every release, from GitHub">
+              {formatDownloads(downloads)}
+            </span>
+          )}
         </p>
         <div className="hero-shot" data-intro="6">
           <div className="frame">
