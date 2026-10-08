@@ -11,13 +11,14 @@ import { Shortcuts } from './components/Shortcuts'
 import { Why } from './components/Why'
 import { useMotion } from './hooks/useMotion'
 import { initNavigation } from './lib/navigation'
-import { useRelease } from './hooks/useRelease'
+import { useReleaseInfo } from './hooks/useRelease'
 import { useTheme } from './hooks/useTheme'
 import { detectOS } from './lib/os'
 
 export function App() {
   const [os] = useState(detectOS)
-  const release = useRelease()
+  const info = useReleaseInfo()
+  const release = info?.latest ?? null
   const theme = useTheme()
   useEffect(initNavigation, [])
   useMotion()
@@ -32,7 +33,12 @@ export function App() {
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <main id="main" tabIndex={-1}>
-            <Hero os={os} release={release} theme={theme.resolved} />
+            <Hero
+              os={os}
+              release={release}
+              downloads={info?.totalDownloads ?? null}
+              theme={theme.resolved}
+            />
             <Why />
             <HowItWorks />
             <Features />

@@ -70,16 +70,26 @@ page serves WebP and falls back to PNG. If a screenshot's pixel size changes, up
 `SHOT_HEIGHT` in `src/content.ts`, and the `og:image` size in `index.html`. Otherwise the reserved
 space won't match.
 
-## How the download buttons work
+## How the download buttons and counter work
 
 `src/lib/release.ts` fetches
-`https://api.github.com/repos/cachewraith/wraithgrid/releases/latest` once per browser session.
-The result, including a failure, is cached in `sessionStorage`, and the request times out after 5 s.
+`https://api.github.com/repos/cachewraith/wraithgrid/releases?per_page=100` once per browser
+session. The result, including a failure, is cached in `sessionStorage`, and the request times out
+after 5 s. That one response gives both values the page needs:
+
+- **The latest release**: the newest entry that is not a pre-release (GitHub's own definition of
+  "latest"). Its installers drive the download buttons and the version label.
+- **The download counter** under the hero buttons: the `download_count` of every installer,
+  summed over all listed releases, pre-releases included. Checksums, `.blockmap` files and the
+  `latest*.yml` files the in-app updater polls are not counted, since they aren't installs.
+  Releases past the 100 most recent aren't counted either.
+
 It keeps only assets whose URL starts with
 `https://github.com/cachewraith/wraithgrid/releases/download/` and matches them to platforms by
 filename. If anything fails (network, 403 rate limit, 404, bad JSON, a renamed file), every
-button links to the releases page and the version label is hidden. Filenames are matched by these
-patterns, so keep release file names in this shape:
+button links to the releases page, and the version label and the counter are hidden. The page
+never shows a count it couldn't read. Filenames are matched by these patterns, so keep release
+file names in this shape:
 
 | Platform               | Pattern           |
 | ---------------------- | ----------------- |

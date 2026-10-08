@@ -1,16 +1,20 @@
 /**
- * Latest-release lookup for the download buttons.
+ * Release lookup for the download buttons and the download counter.
+ *
+ * One request to the release list gives both the latest release and the installer download
+ * total, so a visitor costs one call against GitHub's unauthenticated rate limit, not two.
  *
  * Every failure path (network error, timeout, 403/404/429, malformed JSON, no matching asset)
- * resolves to `null`, and callers fall back to RELEASES_URL. The page therefore never renders a
- * download button without a working link.
+ * resolves to `null`, and callers fall back to RELEASES_URL and hide the counter. The page
+ * therefore never renders a download button without a working link, or a made-up count.
  */
 
 export const REPO_URL = 'https://github.com/cachewraith/wraithgrid'
 export const RELEASES_URL = `${REPO_URL}/releases/latest`
-export const API_URL = 'https://api.github.com/repos/cachewraith/wraithgrid/releases/latest'
+/** Newest first. Releases past the 100 most recent are not counted. */
+export const API_URL = 'https://api.github.com/repos/cachewraith/wraithgrid/releases?per_page=100'
 export const DOWNLOAD_PREFIX = `${REPO_URL}/releases/download/`
-export const CACHE_KEY = 'wraithgrid:release:v1'
+export const CACHE_KEY = 'wraithgrid:release:v2'
 export const TIMEOUT_MS = 5000
 
 export type Platform = 'windows' | 'deb' | 'rpm' | 'pacman' | 'appimage'
@@ -39,6 +43,13 @@ export interface Release {
   publishedAt: string | null
   assets: Partial<Record<Platform, Asset>>
   checksums: Asset | null
+}
+
+export interface ReleaseInfo {
+  /** The newest non-prerelease, or null when it has no installer the page can link to. */
+  latest: Release | null
+  /** Installer downloads summed over every listed release, pre-releases included. */
+  totalDownloads: number
 }
 
 /** Only files attached to this repo's releases are ever linked. */
@@ -99,6 +110,46 @@ export function parseRelease(data: unknown): Release | null {
   return Object.keys(release.assets).length > 0 ? release : null
 }
 
+function isCount(value: unknown): value is number {
+  return Number.isSafeInteger(value) && (value as number) >= 0
+}
+
+/**
+ * Downloads of one release's installers. Checksums, blockmaps and the latest*.yml files the
+ * in-app updater polls are not installs, so they are left out.
+ */
+function installerDownloads(assets: unknown[]): number {
+  let total = 0
+  for (const raw of assets) {
+    if (!isRecord(raw) || !isCount(raw.download_count)) continue
+    const asset = toAsset(raw)
+    if (asset && matchPlatform(asset.name)) total += raw.download_count
+  }
+  return total
+}
+
+/**
+ * Validates a GitHub release list. Drafts are skipped. Returns null unless at least one entry is
+ * a well-formed release, so a malformed payload hides the counter instead of showing zero.
+ */
+export function parseReleaseList(data: unknown): ReleaseInfo | null {
+  if (!Array.isArray(data)) return null
+  // undefined until the newest non-prerelease is reached; GitHub's "latest" is that release.
+  let latest: Release | null | undefined
+  let totalDownloads = 0
+  let valid = 0
+  for (const raw of data) {
+    if (!isRecord(raw) || raw.draft === true) continue
+    const { tag_name: tag, assets } = raw
+    if (typeof tag !== 'string' || !VERSION_PATTERN.test(tag) || !Array.isArray(assets)) continue
+    valid++
+    if (latest === undefined && raw.prerelease !== true) latest = parseRelease(raw)
+    totalDownloads += installerDownloads(assets)
+  }
+  if (valid === 0 || !isCount(totalDownloads)) return null
+  return { latest: latest ?? null, totalDownloads }
+}
+
 /** Serialises a Release back into the API shape, so cached data goes through parseRelease again. */
 function toApiShape(release: Release): unknown {
   const assets = [...Object.values(release.assets), release.checksums]
@@ -109,23 +160,38 @@ function toApiShape(release: Release): unknown {
 
 type CacheEntry = { ok: true; data: unknown } | { ok: false }
 
-/** undefined = nothing cached; null = a failure was cached; Release = a hit. */
-function readCache(storage: Storage | undefined): Release | null | undefined {
+/** Cached entries are user-editable, so both fields are validated like a fresh response. */
+function parseCached(data: unknown): ReleaseInfo | null {
+  if (!isRecord(data) || !isCount(data.totalDownloads)) return null
+  if (data.latest === null) return { latest: null, totalDownloads: data.totalDownloads }
+  const latest = parseRelease(data.latest)
+  return latest ? { latest, totalDownloads: data.totalDownloads } : null
+}
+
+/** undefined = nothing cached; null = a failure was cached; ReleaseInfo = a hit. */
+function readCache(storage: Storage | undefined): ReleaseInfo | null | undefined {
   try {
     const raw = storage?.getItem(CACHE_KEY)
     if (raw == null) return undefined
     const entry = JSON.parse(raw) as unknown
     if (!isRecord(entry)) return undefined
     if (entry.ok === false) return null
-    // sessionStorage is user-editable, so a cached release is validated like a fresh one.
-    return entry.ok === true ? (parseRelease(entry.data) ?? undefined) : undefined
+    return entry.ok === true ? (parseCached(entry.data) ?? undefined) : undefined
   } catch {
     return undefined
   }
 }
 
-function writeCache(storage: Storage | undefined, release: Release | null): void {
-  const entry: CacheEntry = release ? { ok: true, data: toApiShape(release) } : { ok: false }
+function writeCache(storage: Storage | undefined, info: ReleaseInfo | null): void {
+  const entry: CacheEntry = info
+    ? {
+        ok: true,
+        data: {
+          latest: info.latest && toApiShape(info.latest),
+          totalDownloads: info.totalDownloads,
+        },
+      }
+    : { ok: false }
   try {
     storage?.setItem(CACHE_KEY, JSON.stringify(entry))
   } catch {
@@ -148,10 +214,10 @@ export interface FetchOptions {
 }
 
 /**
- * Fetches the latest release once per browser session. Failures are cached too, so a
+ * Fetches the release list once per browser session. Failures are cached too, so a
  * rate-limited visitor is not sent back to the API on every navigation.
  */
-export async function fetchLatestRelease(options: FetchOptions = {}): Promise<Release | null> {
+export async function fetchReleaseInfo(options: FetchOptions = {}): Promise<ReleaseInfo | null> {
   const storage = 'storage' in options ? options.storage : defaultStorage()
   const cached = readCache(storage)
   if (cached !== undefined) return cached
@@ -162,7 +228,7 @@ export async function fetchLatestRelease(options: FetchOptions = {}): Promise<Re
     controller.abort()
   }, options.timeoutMs ?? TIMEOUT_MS)
 
-  let release: Release | null = null
+  let info: ReleaseInfo | null = null
   try {
     const res = await fetchImpl(API_URL, {
       headers: { Accept: 'application/vnd.github+json' },
@@ -170,14 +236,20 @@ export async function fetchLatestRelease(options: FetchOptions = {}): Promise<Re
       referrerPolicy: 'no-referrer',
       signal: controller.signal,
     })
-    if (res.ok) release = parseRelease(await res.json())
+    if (res.ok) info = parseReleaseList(await res.json())
   } catch {
-    release = null
+    info = null
   } finally {
     clearTimeout(timer)
   }
-  writeCache(storage, release)
-  return release
+  writeCache(storage, info)
+  return info
+}
+
+const COUNT_FORMAT = new Intl.NumberFormat('en-US')
+
+export function formatDownloads(count: number): string {
+  return `${COUNT_FORMAT.format(count)} ${count === 1 ? 'download' : 'downloads'}`
 }
 
 /** The link for a platform's download button: the exact file, or the releases page. */
