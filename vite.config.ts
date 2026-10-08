@@ -8,6 +8,9 @@ import { defineConfig } from 'vitest/config'
  *            On Vercel it defaults to the project's production domain
  *            (VERCEL_PROJECT_PRODUCTION_URL, set automatically at build time). Set it explicitly
  *            once you add a custom domain.
+ * GOOGLE_SITE_VERIFICATION, BING_SITE_VERIFICATION
+ *            optional: the token from Google Search Console / Bing Webmaster Tools, added as a
+ *            verification meta tag. Not needed if the domain is verified by DNS.
  */
 function withSlashes(path: string): string {
   return `/${path.replace(/^\/+|\/+$/g, '')}/`.replace(/^\/\/$/, '/')
@@ -25,36 +28,30 @@ if (!/^https?:\/\/[^/]+\//.test(siteUrl)) {
 
 const CSP_META = /\s*<meta\s+http-equiv="Content-Security-Policy"[^>]*>/
 
+const VERIFICATION: [name: string, token: string | undefined][] = [
+  ['google-site-verification', process.env.GOOGLE_SITE_VERIFICATION],
+  ['msvalidate.01', process.env.BING_SITE_VERIFICATION],
+]
+
+function verificationTags(): string {
+  return VERIFICATION.filter((v): v is [string, string] => /^[\w-]+$/.test(v[1] ?? ''))
+    .map(([name, token]) => `<meta name="${name}" content="${token}" />`)
+    .join('\n    ')
+}
+
 /**
- * Fills %SITE_URL% in index.html and emits robots.txt and sitemap.xml for that URL. The dev
- * server drops the CSP tag, because Vite's HMR preamble is an inline script; builds (and
- * `pnpm preview`) keep it.
+ * Fills %SITE_URL% and the verification tags in index.html. The dev server drops the CSP tag,
+ * because Vite's HMR preamble is an inline script; builds (and `pnpm preview`) keep it.
+ * robots.txt, sitemap.xml, llms.txt and the JSON-LD are written by scripts/prerender.mjs.
  */
 function siteMeta(): Plugin {
   return {
     name: 'wraithgrid-site-meta',
     transformIndexHtml(html, ctx) {
-      const out = html.replaceAll('%SITE_URL%', siteUrl)
+      const out = html
+        .replaceAll('%SITE_URL%', siteUrl)
+        .replace('<!--site-verification-->', verificationTags())
       return ctx.server ? out.replace(CSP_META, '') : out
-    },
-    generateBundle() {
-      const lastmod = new Date().toISOString().slice(0, 10)
-      this.emitFile({
-        type: 'asset',
-        fileName: 'robots.txt',
-        source: `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}sitemap.xml\n`,
-      })
-      this.emitFile({
-        type: 'asset',
-        fileName: 'sitemap.xml',
-        source: [
-          '<?xml version="1.0" encoding="UTF-8"?>',
-          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-          `  <url><loc>${siteUrl}</loc><lastmod>${lastmod}</lastmod></url>`,
-          '</urlset>',
-          '',
-        ].join('\n'),
-      })
     },
   }
 }

@@ -28,9 +28,39 @@ pnpm format       # Prettier --write
 
 ## Build
 
-`pnpm build` writes a static site to `dist/`, served from `/`. `SITE_URL` sets the absolute URL used
-for canonical, Open Graph, `robots.txt` and `sitemap.xml` (see Deploy). To serve from a subpath
-instead, set `BASE_PATH` (e.g. `/docs/`) for both `pnpm build` and `pnpm preview`.
+`pnpm build` writes a static site to `dist/`, served from `/`. It runs in three steps:
+
+1. `vite build`: the client bundle and `index.html`.
+2. `vite build --ssr src/entry-server.tsx`: the same page for Node, into `dist-ssr/` (deleted
+   afterwards).
+3. `scripts/prerender.mjs`: renders the page into `dist/index.html` and writes the SEO files (see
+   below). The client then hydrates that HTML instead of building it from nothing.
+
+`SITE_URL` sets the absolute URL used for canonical, Open Graph, JSON-LD, `robots.txt`,
+`sitemap.xml` and `llms.txt` (see Deploy). To serve from a subpath instead, set `BASE_PATH`
+(e.g. `/docs/`) for both `pnpm build` and `pnpm preview`.
+
+## SEO and GEO
+
+The page is prerendered, so search engines and AI crawlers that don't run JavaScript (GPTBot,
+ClaudeBot, PerplexityBot and most others) read the full text. `src/lib/seo.ts` builds everything
+else from `src/content.ts`, the same copy the page shows, so they can't drift apart:
+
+| Output              | What it is                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| JSON-LD in `<head>` | `SoftwareApplication` (version, features, screenshots), `FAQPage`, `WebSite`, source code, author |
+| `/llms.txt`         | A Markdown brief for AI assistants ([llmstxt.org](https://llmstxt.org)), linked from `<head>`     |
+| `/robots.txt`       | Allows everyone, names the AI search crawlers, links the sitemap                                  |
+| `/sitemap.xml`      | The page and its screenshots (image sitemap)                                                      |
+
+The release version in the JSON-LD and `llms.txt` comes from GitHub at build time. If GitHub
+doesn't answer, the build still succeeds and leaves the version out, so redeploy after a release.
+Rendering only uses neutral defaults (dark theme, no detected OS, no release); the theme, OS and
+download links are filled in right after hydration (`useSyncExternalStore` server snapshots).
+
+To verify ownership in Google Search Console or Bing Webmaster Tools with a meta tag, set
+`GOOGLE_SITE_VERIFICATION` and/or `BING_SITE_VERIFICATION` to the token and redeploy. DNS
+verification needs nothing here.
 
 ## Deploy (Vercel)
 
@@ -121,9 +151,11 @@ the hero text at first paint, and `prefers-reduced-motion: reduce` turns that of
 
 ```
 public/            icon, screenshots (PNG + WebP), theme-init.js (runs before first paint)
-scripts/           screenshots.cjs + demo-agent.sh (capture), assets.mjs (icon, WebP)
+scripts/           prerender.mjs (static HTML + SEO files), screenshots.cjs + demo-agent.sh
+                   (capture), assets.mjs (icon, WebP)
 src/content.ts     all page copy: features, shortcuts, FAQ, install commands
-src/lib/           framework-free logic + tests (release, os, theme)
+src/lib/           framework-free logic + tests (release, os, theme, seo)
+src/entry-server.tsx  render to HTML for scripts/prerender.mjs
 src/hooks/         useRelease, useTheme
 src/components/    one component per section
 src/styles/        tokens.css (design tokens), base.css, sections.css

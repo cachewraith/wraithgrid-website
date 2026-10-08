@@ -232,6 +232,11 @@ ul {
   width: 100%;
 }
 
+:root[data-theme='light'] .only-dark,
+:root:not([data-theme='light']) .only-light {
+  display: none;
+}
+
 /* Segmented control, as in the app's top bar and settings. */
 .seg {
   display: flex;

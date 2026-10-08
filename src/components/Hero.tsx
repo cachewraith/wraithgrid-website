@@ -2,7 +2,6 @@ import { HERO_ALT } from '../content'
 import type { OS } from '../lib/os'
 import { REPO_URL, RELEASES_URL, downloadHref, formatDownloads, type Release } from '../lib/release'
 import { sectionPath } from '../lib/sections'
-import type { ResolvedTheme } from '../lib/theme'
 import { ExternalLink } from './ExternalLink'
 import { DownloadIcon } from './icons'
 import { Screenshot } from './Screenshot'
@@ -12,7 +11,6 @@ interface Props {
   release: Release | null
   /** Installer downloads over all releases; null while loading or when GitHub can't be read. */
   downloads: number | null
-  theme: ResolvedTheme
 }
 
 const INSTALL = sectionPath('install', import.meta.env.BASE_URL)
@@ -36,7 +34,7 @@ function PrimaryDownload({ os, release }: Pick<Props, 'os' | 'release'>) {
   )
 }
 
-export function Hero({ os, release, downloads, theme }: Props) {
+export function Hero({ os, release, downloads }: Props) {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="container">
@@ -76,12 +74,19 @@ export function Hero({ os, release, downloads, theme }: Props) {
       </div>
       <div className="container hero-shot" data-intro="5">
         <div className="frame">
+          {/* Both themes are in the HTML and CSS shows one; the hidden one is lazy, so it
+              never loads. public/theme-init.js preloads the visible one. */}
           <Screenshot
-            key={theme}
-            name={theme === 'light' ? 'grid-light' : 'grid-dark'}
+            className="only-dark"
+            name="grid-dark"
             alt={HERO_ALT}
             sizes="(min-width: 1260px) 1200px, calc(100vw - 32px)"
-            priority
+          />
+          <Screenshot
+            className="only-light"
+            name="grid-light"
+            alt={HERO_ALT}
+            sizes="(min-width: 1260px) 1200px, calc(100vw - 32px)"
           />
         </div>
       </div>
