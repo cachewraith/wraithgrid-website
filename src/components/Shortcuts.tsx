@@ -3,10 +3,12 @@ import { SHORTCUTS } from '../content'
 
 export function Shortcuts() {
   return (
-    <section id="shortcuts" className="section section-alt" aria-labelledby="shortcuts-title">
+    <section id="shortcuts" className="section" aria-labelledby="shortcuts-title">
       <div className="container narrow">
-        <p className="eyebrow">Shortcuts</p>
-        <h2 id="shortcuts-title">Keyboard first</h2>
+        <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+        <p className="section-lede">
+          On macOS, use ⌘ where these say Ctrl. Every Ctrl key still reaches the terminal there.
+        </p>
         <table className="shortcuts">
           <caption className="visually-hidden">Wraithgrid keyboard shortcuts</caption>
           <thead>

@@ -1,7 +1,7 @@
 # wraithgrid-website
 
 The landing page for [Wraithgrid](https://github.com/cachewraith/wraithgrid). It's built with Vite,
-React 19, TypeScript and plain CSS. Its runtime dependencies are only `react` and `react-dom`.
+React 19, TypeScript and plain CSS. Its only runtime dependencies are `react` and `react-dom`.
 
 ## Run
 
@@ -57,18 +57,21 @@ in `vercel.json`.
 
 ## Update the screenshots
 
-The screenshots and icon come from the app repo (`docs/screenshots/*.png`, `build/icon.{svg,png}`).
-Refreshing them requires ImageMagick (`magick`):
+The screenshots are taken from a real Wraithgrid build. `scripts/screenshots.cjs` launches the
+app with a demo config: five accounts (claude, gemini, agy), four git repos with uncommitted
+changes, and `scripts/demo-agent.sh` standing in for the three CLIs. Then it saves seven
+1920×1080 PNGs to `public/screenshots/`. It needs the app checkout next to this repo (or
+`WRAITHGRID_DIR`), built, and Linux or macOS:
 
 ```sh
-pnpm assets                         # copies from ../wraithgrid if it exists, else downloads from GitHub
-WRAITHGRID_DIR=/path/to/wraithgrid pnpm assets
+(cd ../wraithgrid && pnpm install && pnpm build)
+node scripts/screenshots.cjs        # grid-dark, grid-light, diff, palette, new-pane, accounts, settings
+pnpm assets                         # icon from the app repo + WebP at 960 px and full width (ImageMagick)
 ```
 
-The script copies the PNGs into `public/` and writes WebP versions at 960 px and full width. The
-page serves WebP and falls back to PNG. If a screenshot's pixel size changes, update `SHOT_WIDTH` and
-`SHOT_HEIGHT` in `src/content.ts`, and the `og:image` size in `index.html`. Otherwise the reserved
-space won't match.
+The page serves WebP and falls back to PNG. If a screenshot's pixel size changes, update
+`SHOT_WIDTH` and `SHOT_HEIGHT` in `src/content.ts`, the `og:image` size in `index.html`, and the
+`1920w` in `public/theme-init.js`. Otherwise the reserved space won't match.
 
 ## How the download buttons and counter work
 
@@ -91,38 +94,37 @@ button links to the releases page, and the version label and the counter are hid
 never shows a count it couldn't read. Filenames are matched by these patterns, so keep release
 file names in this shape:
 
-| Platform               | Pattern           |
-| ---------------------- | ----------------- |
-| Windows                | `-Setup-.*\.exe$` |
-| Ubuntu / Debian / Kali | `amd64\.deb$`     |
-| Fedora                 | `x86_64\.rpm$`    |
-| Arch                   | `\.pacman$`       |
-| AppImage               | `\.AppImage$`     |
+| Platform               | Pattern            |
+| ---------------------- | ------------------ |
+| Windows                | `-Setup-.*\.exe$`  |
+| macOS (Apple silicon)  | `-mac-arm64\.dmg$` |
+| macOS (Intel)          | `-mac-x64\.dmg$`   |
+| Ubuntu / Debian / Kali | `amd64\.deb$`      |
+| Fedora                 | `x86_64\.rpm$`     |
+| Arch                   | `\.pacman$`        |
+| AppImage               | `\.AppImage$`      |
 
-`src/lib/os.ts` chooses the hero button: Windows gets the `.exe`, Linux gets the Install section
-with the AppImage tab selected (the distro can't be detected reliably), and everything else sees
-"Available for Windows and Linux".
+The macOS `.zip` builds aren't linked or counted; the `.dmg` is what people install.
 
-## Motion
+`src/lib/os.ts` chooses the hero button: Windows gets the `.exe`. macOS and Linux go to the Install
+section with the macOS or AppImage tab selected, since neither the Mac's CPU nor the Linux distro
+can be detected reliably. Everything else goes to the Install section too.
 
-- **Hero entrance**: CSS keyframes (`[data-intro]` in `sections.css`). It runs on first paint.
-- **Everything else** (`src/lib/motion.ts`, GSAP): ScrollSmoother smooth scrolling, scroll reveals,
-  the how-it-works diagram drawing itself, and the hero screenshot flattening as you scroll.
-  `useMotion` imports it after the page `load` event, when the browser is idle, so GSAP never
-  competes with the hero image.
-- **Phones and tablets** keep native scrolling (ScrollSmoother's default for touch); reveals
-  still run.
-- **`prefers-reduced-motion: reduce`** turns all of it off, and the page is fully static.
-- The hero tilt's starting angle is in both `sections.css` and `motion.ts`; change them together.
+## Design
+
+The page follows the app's own look since v1.4: neutral greys, hairline rules, a monochrome
+primary button, and the violet accent kept for links and focus (`src/styles/tokens.css` mirrors
+the app's tokens). There is no scroll animation library. The only motion is a short CSS fade on
+the hero text at first paint, and `prefers-reduced-motion: reduce` turns that off.
 
 ## Layout
 
 ```
 public/            icon, screenshots (PNG + WebP), theme-init.js (runs before first paint)
-scripts/assets.mjs screenshot/icon import and WebP conversion
+scripts/           screenshots.cjs + demo-agent.sh (capture), assets.mjs (icon, WebP)
 src/content.ts     all page copy: features, shortcuts, FAQ, install commands
 src/lib/           framework-free logic + tests (release, os, theme)
-src/hooks/         useRelease, useTheme, useMotion
+src/hooks/         useRelease, useTheme
 src/components/    one component per section
 src/styles/        tokens.css (design tokens), base.css, sections.css
 ```
@@ -137,4 +139,4 @@ src/styles/        tokens.css (design tokens), base.css, sections.css
 - No `dangerouslySetInnerHTML` (an ESLint rule enforces this). All external links use
   `rel="noopener noreferrer"`.
 
-Wraithgrid is an independent project, not affiliated with Anthropic. MIT licensed.
+Wraithgrid is an independent project, not affiliated with Anthropic or Google. MIT licensed.

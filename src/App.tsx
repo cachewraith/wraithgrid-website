@@ -8,8 +8,6 @@ import { HowItWorks } from './components/HowItWorks'
 import { Install } from './components/Install'
 import { Nav } from './components/Nav'
 import { Shortcuts } from './components/Shortcuts'
-import { Why } from './components/Why'
-import { useMotion } from './hooks/useMotion'
 import { initNavigation } from './lib/navigation'
 import { useReleaseInfo } from './hooks/useRelease'
 import { useTheme } from './hooks/useTheme'
@@ -21,7 +19,6 @@ export function App() {
   const release = info?.latest ?? null
   const theme = useTheme()
   useEffect(initNavigation, [])
-  useMotion()
 
   return (
     <>
@@ -29,27 +26,21 @@ export function App() {
         Skip to content
       </a>
       <Nav themeMode={theme.mode} onThemeChange={theme.setMode} />
-      {/* ScrollSmoother moves #smooth-content; the fixed nav stays outside it. */}
-      <div id="smooth-wrapper">
-        <div id="smooth-content">
-          <main id="main" tabIndex={-1}>
-            <Hero
-              os={os}
-              release={release}
-              downloads={info?.totalDownloads ?? null}
-              theme={theme.resolved}
-            />
-            <Why />
-            <HowItWorks />
-            <Features />
-            <Gallery />
-            <Install os={os} release={release} />
-            <Shortcuts />
-            <Faq />
-          </main>
-          <Footer />
-        </div>
-      </div>
+      <main id="main" tabIndex={-1}>
+        <Hero
+          os={os}
+          release={release}
+          downloads={info?.totalDownloads ?? null}
+          theme={theme.resolved}
+        />
+        <HowItWorks />
+        <Features />
+        <Gallery />
+        <Install os={os} release={release} />
+        <Shortcuts />
+        <Faq />
+      </main>
+      <Footer />
     </>
   )
 }

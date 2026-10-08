@@ -25,7 +25,7 @@ export function Footer() {
             No tracking: this site has no analytics, trackers or cookies, and the app has no
             telemetry.
           </p>
-          <p>Wraithgrid is an independent project, not affiliated with Anthropic.</p>
+          <p>Wraithgrid is an independent project, not affiliated with Anthropic or Google.</p>
         </div>
       </div>
     </footer>

@@ -17,12 +17,23 @@ export const DOWNLOAD_PREFIX = `${REPO_URL}/releases/download/`
 export const CACHE_KEY = 'wraithgrid:release:v2'
 export const TIMEOUT_MS = 5000
 
-export type Platform = 'windows' | 'deb' | 'rpm' | 'pacman' | 'appimage'
+export type Platform = 'windows' | 'macArm' | 'macIntel' | 'deb' | 'rpm' | 'pacman' | 'appimage'
 
-export const PLATFORMS: readonly Platform[] = ['windows', 'deb', 'rpm', 'pacman', 'appimage']
+export const PLATFORMS: readonly Platform[] = [
+  'windows',
+  'macArm',
+  'macIntel',
+  'deb',
+  'rpm',
+  'pacman',
+  'appimage',
+]
 
+/** macOS also ships .zip builds; the .dmg is the one people install, so only it is linked. */
 const ASSET_PATTERNS: Record<Platform, RegExp> = {
   windows: /-Setup-.*\.exe$/,
+  macArm: /-mac-arm64\.dmg$/,
+  macIntel: /-mac-x64\.dmg$/,
   deb: /amd64\.deb$/,
   rpm: /x86_64\.rpm$/,
   pacman: /\.pacman$/,

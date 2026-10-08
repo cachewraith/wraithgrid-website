@@ -1,7 +1,6 @@
 /**
- * Coarse OS detection for picking the default download. Only Windows and Linux builds exist, so
- * anything else collapses into "mac", "mobile" or "other". Linux distros are deliberately not
- * guessed: user agents don't carry that reliably.
+ * Coarse OS detection for picking the default download. Linux distros and Mac CPU types are
+ * deliberately not guessed: user agents don't carry either reliably.
  */
 
 export type OS = 'windows' | 'linux' | 'mac' | 'mobile' | 'other'

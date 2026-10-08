@@ -25,7 +25,7 @@
   link.as = 'image'
   link.type = 'image/webp'
   link.setAttribute('fetchpriority', 'high')
-  link.setAttribute('imagesrcset', shot('960') + ' 960w, ' + shot('full') + ' 1908w')
-  link.setAttribute('imagesizes', '(min-width: 1180px) 1120px, calc(100vw - 32px)')
+  link.setAttribute('imagesrcset', shot('960') + ' 960w, ' + shot('full') + ' 1920w')
+  link.setAttribute('imagesizes', '(min-width: 1260px) 1200px, calc(100vw - 32px)')
   document.head.appendChild(link)
 })()

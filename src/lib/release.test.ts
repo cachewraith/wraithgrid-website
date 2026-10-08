@@ -87,6 +87,8 @@ describe('matchPlatform', () => {
     ['wraithgrid-1.1.0-x86_64.rpm', 'rpm'],
     ['wraithgrid-1.1.0-x64.pacman', 'pacman'],
     ['Wraithgrid-1.1.0-x86_64.AppImage', 'appimage'],
+    ['Wraithgrid-1.6.0-mac-arm64.dmg', 'macArm'],
+    ['Wraithgrid-1.6.0-mac-x64.dmg', 'macIntel'],
   ])('%s → %s', (name, platform) => {
     expect(matchPlatform(name)).toBe(platform)
   })
@@ -97,6 +99,9 @@ describe('matchPlatform', () => {
     'latest.yml',
     'wraithgrid-1.1.0-arm64.deb',
     'Wraithgrid-1.1.0.AppImage.zsync',
+    'Wraithgrid-1.6.0-mac-arm64.zip',
+    'Wraithgrid-1.6.0-mac-arm64.dmg.blockmap',
+    'latest-mac.yml',
   ])('ignores %s', (name) => {
     expect(matchPlatform(name)).toBeNull()
   })
