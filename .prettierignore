@@ -1,3 +1,4 @@
 dist
 pnpm-lock.yaml
 public/icon.svg
+dist-ssr

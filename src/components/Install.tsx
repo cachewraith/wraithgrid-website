@@ -8,7 +8,45 @@ import { DownloadIcon } from './icons'
 
 /** Linux gets the AppImage tab: it runs on any distro, so no distro has to be guessed. */
 function initialTab(os: OS): Platform {
-  return os === 'linux' ? 'appimage' : 'windows'
+  return os === 'linux' ? 'appimage' : os === 'mac' ? 'macArm' : 'windows'
+}
+
+function WindowsNote({ file }: { file: string }) {
+  return (
+    <>
+      <p>
+        Run <code>{file}</code> and follow the installer.
+      </p>
+      <p className="note">
+        <strong>Windows SmartScreen will warn you.</strong> The installer is not code-signed yet, so
+        Windows shows “Windows protected your PC”. Choose <b>More info</b>, then <b>Run anyway</b>.
+        To check the file first, verify its checksum below.
+      </p>
+    </>
+  )
+}
+
+function MacNote({ release }: { release: Release | null }) {
+  const intel = release?.assets.macIntel
+  return (
+    <>
+      <p>
+        On an Intel Mac, download{' '}
+        <ExternalLink href={downloadHref(release, 'macIntel')}>
+          {intel?.name ?? 'the mac-x64 .dmg'}
+        </ExternalLink>{' '}
+        instead. Open the .dmg and drag Wraithgrid to Applications.
+      </p>
+      <p className="note">
+        <strong>The first launch is blocked by Gatekeeper.</strong> The app is not notarized yet.
+        Right-click Wraithgrid in Applications, choose <b>Open</b>, then <b>Open</b> again. Or run:
+      </p>
+      <CodeBlock
+        code="xattr -dr com.apple.quarantine /Applications/Wraithgrid.app"
+        label="Remove the quarantine flag"
+      />
+    </>
+  )
 }
 
 function Panel({ tab, release }: { tab: InstallTab; release: Release | null }) {
@@ -29,20 +67,14 @@ function Panel({ tab, release }: { tab: InstallTab; release: Release | null }) {
           <p>Then, in the folder you downloaded it to:</p>
           <CodeBlock code={tab.command(file)} label={`${tab.label} install command`} />
         </>
+      ) : tab.id === 'macArm' ? (
+        <MacNote release={release} />
       ) : (
-        <>
-          <p>
-            Run <code>{file}</code> and follow the installer.
-          </p>
-          <div className="callout callout-warn">
-            <strong>Windows SmartScreen will warn you.</strong> The installer is not code-signed
-            yet, so Windows shows “Windows protected your PC”. Choose <b>More info</b>, then{' '}
-            <b>Run anyway</b>. If you’d rather check the file first, verify its checksum below.
-          </div>
-        </>
+        <WindowsNote file={file} />
       )}
       <p className="install-req">
-        {tab.requirement} Requires the <code>claude</code> CLI to be installed.
+        {tab.requirement} Needs at least one of <code>claude</code>, <code>gemini</code> or{' '}
+        <code>agy</code> installed.
       </p>
     </>
   )
@@ -76,15 +108,14 @@ export function Install({ os, release }: { os: OS; release: Release | null }) {
   return (
     <section id="install" className="section" aria-labelledby="install-title">
       <div className="container install">
-        <p className="eyebrow">Install</p>
-        <h2 id="install-title">Install Wraithgrid</h2>
+        <h2 id="install-title">Install</h2>
         <p className="section-lede">
-          x64 builds for Windows 10/11 and Linux: Ubuntu, Debian, Kali, Fedora and Arch, on X11 or
-          Wayland (including Hyprland and sway).
+          Builds for Windows 10/11, macOS (Apple silicon and Intel) and x64 Linux: Ubuntu, Debian,
+          Kali, Fedora and Arch, on X11 or Wayland, including Hyprland and sway.
         </p>
 
         <div className="tabs">
-          <div className="tablist" role="tablist" aria-label="Platform" onKeyDown={onKeyDown}>
+          <div className="seg tablist" role="tablist" aria-label="Platform" onKeyDown={onKeyDown}>
             {INSTALL_TABS.map((t) => (
               <button
                 key={t.id}

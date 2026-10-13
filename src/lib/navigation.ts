@@ -2,21 +2,12 @@
  * In-page navigation with clean URLs. Section links are real paths ("/install"); clicks scroll
  * to the section and pushState the path, back/forward scroll again, and a deep link scrolls on
  * load. Plain "#id" links (the skip link) scroll and move focus without touching the URL.
- *
- * How the page scrolls is swappable: native window scrolling by default, ScrollSmoother when
- * src/lib/motion.ts is active (it calls setScroller).
  */
 import { sectionFromUrl, sectionPath, type SectionId } from './sections'
 
-export interface Scroller {
-  /** Scroll position that puts target's top just below the fixed nav. */
-  measure: (target: HTMLElement) => number
-  scrollTo: (y: number, smooth: boolean) => void
-}
-
 const BASE = import.meta.env.BASE_URL
 
-export function navOffset(): number {
+function navOffset(): number {
   return (document.querySelector('.nav-inner')?.getBoundingClientRect().bottom ?? 0) + 16
 }
 
@@ -24,40 +15,30 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-const nativeScroller: Scroller = {
-  measure: (target) => target.getBoundingClientRect().top + window.scrollY - navOffset(),
-  scrollTo: (y, smooth) => {
-    window.scrollTo({ top: y, behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'instant' })
-  },
-}
-
-let scroller: Scroller = nativeScroller
-
-export function setScroller(next: Scroller | null) {
-  scroller = next ?? nativeScroller
+function scrollTo(y: number, smooth: boolean) {
+  window.scrollTo({ top: y, behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'instant' })
 }
 
 function scrollToElement(target: HTMLElement | null, smooth: boolean, focus: boolean) {
   if (!target) {
-    scroller.scrollTo(0, smooth)
+    scrollTo(0, smooth)
     return
   }
-  // Measure before focusing: ScrollSmoother scrolls focused elements into view by itself, so
-  // focus goes first and the explicit scroll to the measured position wins.
-  const y = Math.max(0, scroller.measure(target))
+  // Measure before focusing, so the explicit scroll to the measured position wins.
+  const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - navOffset())
   if (focus) {
     if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
     target.focus({ preventScroll: true })
   }
-  scroller.scrollTo(y, smooth)
+  scrollTo(y, smooth)
 }
 
 export function goToSection(id: SectionId | null, smooth = true, focus = true) {
   scrollToElement(id ? document.getElementById(id) : null, smooth, focus)
 }
 
-/** Scrolls to whatever section the current URL names. Used on load and by motion.ts. */
-export function restoreSection(smooth = false) {
+/** Scrolls to whatever section the current URL names. Used on load. */
+function restoreSection(smooth = false) {
   const id = sectionFromUrl(location.pathname, location.hash, BASE)
   if (id) goToSection(id, smooth, false)
 }

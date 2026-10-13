@@ -4,7 +4,6 @@ export function Faq() {
   return (
     <section id="faq" className="section" aria-labelledby="faq-title">
       <div className="container narrow">
-        <p className="eyebrow">FAQ</p>
         <h2 id="faq-title">Questions</h2>
         <div className="faq">
           {FAQS.map((f) => (

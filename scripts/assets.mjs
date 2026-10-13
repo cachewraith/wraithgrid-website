@@ -1,5 +1,6 @@
-// Copies screenshots and the icon from the app repo (or GitHub) into public/, then writes
-// WebP versions at 960 px and full width. Needs ImageMagick (`magick`) on PATH.
+// Copies the icon from the app repo (or GitHub) into public/, then writes WebP versions of
+// public/screenshots/*.png (made by scripts/screenshots.cjs) at 960 px and full width.
+// Needs ImageMagick (`magick`) on PATH.
 //
 //   pnpm assets                      # uses ../wraithgrid if present, else GitHub
 //   WRAITHGRID_DIR=/path pnpm assets # explicit local checkout
@@ -11,9 +12,8 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const source = resolve(root, process.env.WRAITHGRID_DIR ?? '../wraithgrid')
 const raw = 'https://raw.githubusercontent.com/cachewraith/wraithgrid/main/'
-const shots = ['grid-dark', 'grid-light', 'new-pane', 'accounts', 'settings']
+const shots = ['grid-dark', 'grid-light', 'diff', 'palette', 'new-pane', 'accounts', 'settings']
 const files = [
-  ...shots.map((s) => [`docs/screenshots/${s}.png`, `screenshots/${s}.png`]),
   ['build/icon.svg', 'icon.svg'],
   ['build/icon.png', 'icon.png'],
 ]
@@ -24,7 +24,7 @@ async function fetchTo(url, dest) {
   writeFileSync(dest, Buffer.from(await res.arrayBuffer()))
 }
 
-const local = existsSync(join(source, 'docs/screenshots'))
+const local = existsSync(join(source, 'build/icon.svg'))
 console.log(local ? `Copying from ${source}` : `Downloading from ${raw}`)
 for (const [from, to] of files) {
   const dest = join(root, 'public', to)
