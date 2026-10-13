@@ -245,6 +245,15 @@ function fakeBin(tmp) {
     await pause(800)
     await shot('accounts')
 
+    // Mods: from the installed mods down, so the catalog shows below them.
+    await win.getByRole('button', { name: 'Mods', exact: true }).click()
+    await win.getByText('most installed first').waitFor()
+    await win
+      .locator('h2.sgrp', { hasText: 'Installed' })
+      .evaluate((el) => el.scrollIntoView({ block: 'start' }))
+    await pause(500)
+    await shot('mods')
+
     // Settings opens at General, which shows this run's temp paths; start at Appearance.
     await win.getByRole('button', { name: 'Settings' }).click()
     await pause(800)

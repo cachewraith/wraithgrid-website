@@ -46,7 +46,7 @@ export function Hero({ os, release, downloads }: Props) {
           ) : (
             <ExternalLink href={RELEASES_URL}>Latest release</ExternalLink>
           )}
-          <span>Now runs Gemini CLI and Antigravity CLI, and pastes screenshots.</span>
+          <span>Now with a Mods screen: find, install and switch claude mods in the app.</span>
         </p>
         <h1 id="hero-title" data-intro="2">
           Every agent session you run, side by side.

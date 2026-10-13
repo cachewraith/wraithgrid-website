@@ -5,7 +5,7 @@ export const SHOT_WIDTH = 1920
 export const SHOT_HEIGHT = 1080
 
 export type ShotName =
-  'grid-dark' | 'grid-light' | 'diff' | 'palette' | 'new-pane' | 'accounts' | 'settings'
+  'grid-dark' | 'grid-light' | 'diff' | 'palette' | 'new-pane' | 'accounts' | 'mods' | 'settings'
 
 export interface Shot {
   name: ShotName
@@ -17,6 +17,11 @@ export const HERO_ALT =
   'Wraithgrid with four panes in a 2×2 grid: three claude panes and one Gemini CLI pane, each with its own account, project folder and git branch. One is running, one needs approval, two are idle. The sidebar lists the panes of the main workspace and the accounts, two of them in a Work folder.'
 
 export const GALLERY: readonly Shot[] = [
+  {
+    name: 'mods',
+    title: 'Mods',
+    alt: 'The Mods screen: the mods each claude account has installed, with a switch to turn each on or off, and below them a searchable catalog of the marketplace with install counts and an Install button per mod.',
+  },
   {
     name: 'diff',
     title: 'Changes',
@@ -64,12 +69,12 @@ export const FEATURES: readonly Feature[] = [
     body: 'Every claude and gemini account gets its own config folder, so its login and history never touch another account. agy keeps one sign-in in your system keyring.',
   },
   {
-    title: 'Git in every pane',
-    body: 'The pane header shows the branch and how many files changed. Click it, or press Ctrl+Shift+D, for the diff in a Changes panel you can drag wider.',
+    title: 'Claude mods',
+    body: 'Panes draw what claude mods draw: side panes, a band above the prompt, status lines, toasts. The Mods screen searches the marketplaces, installs with a click and turns mods on or off per account.',
   },
   {
-    title: 'Worktrees',
-    body: 'Open a new pane on a fresh branch in its own git worktree, so two agents can work on one repo without editing the same files.',
+    title: 'Git and worktrees',
+    body: 'The pane header shows the branch and how many files changed; click it, or press Ctrl+Shift+D, for the diff. Open a pane on a fresh branch in its own git worktree, so two agents never edit the same files.',
   },
   {
     title: 'Paste screenshots',
@@ -165,6 +170,10 @@ export const FAQS: readonly Faq[] = [
   {
     q: 'Can two Antigravity accounts use different Google logins?',
     a: 'Not on one computer. agy keeps its sign-in in the system keyring, so every Antigravity account shares it. That is a limit of agy itself. Claude and Gemini accounts each keep their own login.',
+  },
+  {
+    q: 'Does it work with claude mods?',
+    a: 'Yes, since v1.7. Mods run inside each claude pane, and the Mods screen lists what every account has installed, lets you search and install from the account’s marketplaces, and loads a mod folder you are building into every pane. Wraithgrid asks the account’s own claude for all of it. Pictures a mod draws show as their text description.',
   },
   {
     q: 'Does it run on macOS?',
