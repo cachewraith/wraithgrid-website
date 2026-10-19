@@ -46,15 +46,18 @@ export function Hero({ os, release, downloads }: Props) {
           ) : (
             <ExternalLink href={RELEASES_URL}>Latest release</ExternalLink>
           )}
-          <span>Now with a Mods screen: find, install and switch claude mods in the app.</span>
+          <span>
+            New in 1.9: Codex, opencode, Cursor and Copilot panes, and conversations that continue
+            after a restart.
+          </span>
         </p>
         <h1 id="hero-title" data-intro="2">
           Every agent session you run, side by side.
         </h1>
         <p className="lede" data-intro="3">
-          Wraithgrid is a desktop app for running many Claude Code, Gemini CLI and Antigravity
-          sessions at once. Each pane has its own account, its own project folder and its own git
-          branch.
+          Wraithgrid is a desktop app for running many Claude Code, Codex, Gemini CLI and other
+          agent sessions at once. Each pane has its own account, its own project folder and its own
+          git branch.
         </p>
         <div className="cta" data-intro="4">
           <PrimaryDownload os={os} release={release} />

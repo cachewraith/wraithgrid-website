@@ -16,7 +16,7 @@ import { REPO_URL, RELEASES_URL } from './release'
 
 export const SITE_NAME = 'Wraithgrid'
 export const SUMMARY =
-  'Wraithgrid is a free, open-source desktop app for running many Claude Code, Gemini CLI and Antigravity CLI sessions side by side, each with its own account, project folder and git branch. It runs on Windows, macOS and Linux.'
+  'Wraithgrid is a free, open-source desktop app for running many Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent and Copilot CLI sessions side by side, each with its own account, project folder and git branch. It runs on Windows, macOS and Linux.'
 const AUTHOR = { name: 'cachewraith', url: 'https://github.com/cachewraith' }
 
 /** Crawlers of AI search and assistant products, welcomed by name in robots.txt. */
@@ -57,7 +57,7 @@ export function buildJsonLd(site: string, version: string | null): object {
     downloadUrl: RELEASES_URL,
     installUrl: `${site}install`,
     softwareRequirements:
-      'At least one of: Claude Code (claude), Gemini CLI (gemini), Antigravity CLI (agy)',
+      'At least one of: Claude Code (claude), Codex (codex), Gemini CLI (gemini), Antigravity CLI (agy), opencode, Cursor Agent (cursor-agent), Copilot CLI (copilot)',
     featureList: FEATURES.map((f) => `${f.title}: ${f.body}`),
     screenshot: [
       {
@@ -140,7 +140,11 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     '',
     '- Claude Code: `CLAUDE_CONFIG_DIR=~/.wraithgrid/accounts/<account> claude`',
     '- Gemini CLI: `GEMINI_CLI_HOME=~/.wraithgrid/accounts/<account> gemini`',
-    '- Antigravity CLI: `agy`, which keeps its sign-in in the system keyring, so all Antigravity accounts on one computer share one Google login.',
+    '- Codex: `CODEX_HOME=~/.wraithgrid/accounts/<account> codex`',
+    '- Cursor Agent: `CURSOR_CONFIG_DIR=~/.wraithgrid/accounts/<account> cursor-agent`',
+    '- Copilot CLI: `COPILOT_HOME=~/.wraithgrid/accounts/<account> copilot`',
+    '- Codex, Cursor and Copilot may keep the sign-in in the system keyring, so their accounts can share one login.',
+    '- Antigravity CLI (`agy`) and opencode have no per-account folder: all their accounts on one computer share one login.',
     '',
     'It never reads, copies or proxies anything inside those folders, and it has no telemetry.',
     '',

@@ -1,5 +1,11 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
-import { INSTALL_TABS, VERIFY_COMMAND, installFile, type InstallTab } from '../content'
+import {
+  INSTALL_SCRIPT,
+  INSTALL_TABS,
+  VERIFY_COMMAND,
+  installFile,
+  type InstallTab,
+} from '../content'
 import type { OS } from '../lib/os'
 import { RELEASES_URL, downloadHref, type Platform, type Release } from '../lib/release'
 import { CodeBlock } from './CodeBlock'
@@ -73,8 +79,9 @@ function Panel({ tab, release }: { tab: InstallTab; release: Release | null }) {
         <WindowsNote file={file} />
       )}
       <p className="install-req">
-        {tab.requirement} Needs at least one of <code>claude</code>, <code>gemini</code> or{' '}
-        <code>agy</code> installed.
+        {tab.requirement} Needs at least one agent CLI installed: <code>claude</code>,{' '}
+        <code>codex</code>, <code>gemini</code>, <code>agy</code>, <code>opencode</code>,{' '}
+        <code>cursor-agent</code> or <code>copilot</code>.
       </p>
     </>
   )
@@ -150,6 +157,15 @@ export function Install({ os, release }: { os: OS; release: Release | null }) {
               {active === t.id && <Panel tab={t} release={release} />}
             </div>
           ))}
+        </div>
+
+        <div className="verify">
+          <h3>Or in one line</h3>
+          <p>
+            On Linux or macOS, this picks the package for your system, checks it against{' '}
+            <code>SHA256SUMS.txt</code> and installs it:
+          </p>
+          <CodeBlock code={INSTALL_SCRIPT} label="One-line install command" />
         </div>
 
         <div className="verify">
