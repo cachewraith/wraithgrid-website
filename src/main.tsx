@@ -3,6 +3,8 @@ import '@fontsource-variable/jetbrains-mono/wght.css'
 import './styles/tokens.css'
 import './styles/base.css'
 import './styles/sections.css'
+import './styles/themes.css'
+import './styles/docs.css'
 import { StrictMode } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { App } from './App'
@@ -12,7 +14,7 @@ if (!root) throw new Error('#root is missing from index.html')
 
 const app = (
   <StrictMode>
-    <App />
+    <App path={location.pathname} />
   </StrictMode>
 )
 // Builds ship prerendered HTML (scripts/prerender.mjs) to hydrate; the dev server doesn't.

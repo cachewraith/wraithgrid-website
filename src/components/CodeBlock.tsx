@@ -4,10 +4,12 @@ import { CheckIcon, CopyIcon } from './icons'
 interface Props {
   code: string
   label: string
+  /** A `$` before a one-line shell command; off for files and multi-line examples. */
+  prompt?: boolean
 }
 
 /** A shell command that scrolls inside itself, with a copy button that announces success. */
-export function CodeBlock({ code, label }: Props) {
+export function CodeBlock({ code, label, prompt = true }: Props) {
   const [copied, setCopied] = useState(false)
   const timer = useRef<number | undefined>(undefined)
 
@@ -35,9 +37,11 @@ export function CodeBlock({ code, label }: Props) {
     <div className="code">
       <pre tabIndex={0} aria-label={label}>
         <code>
-          <span className="code-prompt" aria-hidden="true">
-            ${' '}
-          </span>
+          {prompt ? (
+            <span className="code-prompt" aria-hidden="true">
+              ${' '}
+            </span>
+          ) : null}
           {code}
         </code>
       </pre>

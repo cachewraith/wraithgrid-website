@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FAQS } from '../content'
+import { DOCS } from '../docs/pages'
 import { buildJsonLd, buildLlmsTxt, buildRobotsTxt, buildSitemap, jsonLdScript } from './seo'
 
 const SITE = 'https://wraithgrid.example.org/'
@@ -71,9 +72,11 @@ describe('buildRobotsTxt', () => {
 })
 
 describe('buildSitemap', () => {
-  it('lists the page once with its date and screenshots', () => {
+  it('lists the page once with its date and screenshots, then every docs page', () => {
     const xml = buildSitemap(SITE, '2026-10-08')
-    expect(xml.match(/<loc>/g)).toHaveLength(1)
+    expect(xml.match(/<loc>/g)).toHaveLength(1 + DOCS.length)
+    expect(xml).toContain(`<loc>${SITE}docs</loc>`)
+    expect(xml).toContain(`<loc>${SITE}docs/themes</loc>`)
     expect(xml).toContain(`<loc>${SITE}</loc>`)
     expect(xml).toContain('<lastmod>2026-10-08</lastmod>')
     expect(xml).toContain(`<image:loc>${SITE}screenshots/grid-dark.png</image:loc>`)

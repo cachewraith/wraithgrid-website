@@ -33,8 +33,18 @@ pnpm format       # Prettier --write
 1. `vite build`: the client bundle and `index.html`.
 2. `vite build --ssr src/entry-server.tsx`: the same page for Node, into `dist-ssr/` (deleted
    afterwards).
-3. `scripts/prerender.mjs`: renders the page into `dist/index.html` and writes the SEO files (see
-   below). The client then hydrates that HTML instead of building it from nothing.
+3. `scripts/prerender.mjs`: renders the page into `dist/index.html`, each docs page into
+   `dist/docs/<page>/index.html` (own title, description, canonical and JSON-LD), and writes the
+   SEO files (see below). The client then hydrates that HTML instead of building it from nothing.
+
+## Docs
+
+`/docs` and its pages are data in `src/docs/pages.ts` (paragraphs, steps, tables, code, notes),
+rendered by `src/components/docs/`. Text is never HTML: `` `code` ``, `**bold**`,
+`[label](/path)` and `⟦key⟧` are parsed into React elements (`src/lib/docs.ts`). Facts come from
+the app's README, `docs/WHATS-NEW.md` and `docs/THEMES.md`. The theme cards' colors live in
+`src/styles/themes.css` (the CSP allows no inline styles); a test keeps them equal to
+`src/lib/app-themes.ts`.
 
 `SITE_URL` sets the absolute URL used for canonical, Open Graph, JSON-LD, `robots.txt`,
 `sitemap.xml` and `llms.txt` (see Deploy). To serve from a subpath instead, set `BASE_PATH`
@@ -51,7 +61,7 @@ else from `src/content.ts`, the same copy the page shows, so they can't drift ap
 | JSON-LD in `<head>` | `SoftwareApplication` (version, features, screenshots), `FAQPage`, `WebSite`, source code, author |
 | `/llms.txt`         | A Markdown brief for AI assistants ([llmstxt.org](https://llmstxt.org)), linked from `<head>`     |
 | `/robots.txt`       | Allows everyone, names the AI search crawlers, links the sitemap                                  |
-| `/sitemap.xml`      | The page and its screenshots (image sitemap)                                                      |
+| `/sitemap.xml`      | The page and its screenshots (image sitemap), then every docs page                                |
 
 The release version in the JSON-LD and `llms.txt` comes from GitHub at build time. If GitHub
 doesn't answer, the build still succeeds and leaves the version out, so redeploy after a release.

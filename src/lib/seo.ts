@@ -12,6 +12,8 @@ import {
   SHORTCUTS,
   type ShotName,
 } from '../content'
+import { DOCS } from '../docs/pages'
+import { docsPath, type DocPage } from './docs'
 import { REPO_URL, RELEASES_URL } from './release'
 
 export const SITE_NAME = 'Wraithgrid'
@@ -117,9 +119,56 @@ export function buildJsonLd(site: string, version: string | null): object {
 }
 
 /** `<script type="application/ld+json">`, with `<` escaped so text can't close the tag. */
+function ldScript(data: object): string {
+  return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`
+}
+
 export function jsonLdScript(site: string, version: string | null): string {
-  const json = JSON.stringify(buildJsonLd(site, version)).replace(/</g, '\\u003c')
-  return `<script type="application/ld+json">${json}</script>`
+  return ldScript(buildJsonLd(site, version))
+}
+
+/** A docs page's absolute URL. `site` ends in "/" (it is the base). */
+export function docUrl(site: string, page: Pick<DocPage, 'slug'>): string {
+  return `${site.replace(/\/$/, '')}${docsPath(page.slug, '/')}`
+}
+
+/** A docs page: a TechArticle about the app, and where it sits (breadcrumbs). */
+export function buildDocJsonLd(site: string, page: DocPage): object {
+  const url = docUrl(site, page)
+  const crumbs = [
+    { name: SITE_NAME, item: site },
+    { name: 'Docs', item: docUrl(site, { slug: '' }) },
+    ...(page.slug ? [{ name: page.nav, item: url }] : []),
+  ]
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'TechArticle',
+        '@id': `${url}#article`,
+        headline: page.title,
+        description: page.description,
+        url,
+        inLanguage: 'en',
+        about: { '@id': `${site}#app` },
+        isPartOf: { '@id': `${site}#website` },
+        author: { '@type': 'Person', ...AUTHOR },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: crumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: c.item,
+        })),
+      },
+    ],
+  }
+}
+
+export function docJsonLdScript(site: string, page: DocPage): string {
+  return ldScript(buildDocJsonLd(site, page))
 }
 
 /** https://llmstxt.org: a plain-Markdown brief for AI assistants and answer engines. */
@@ -170,6 +219,10 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     '## FAQ',
     '',
     ...FAQS.flatMap((f) => [`### ${f.q}`, '', f.a, '']),
+    '## Docs',
+    '',
+    ...DOCS.map((d) => `- [${d.title}](${docUrl(site, d)}): ${d.description}`),
+    '',
     '## Links',
     '',
     `- [Website](${site})`,
@@ -203,7 +256,7 @@ function xml(text: string): string {
     .replace(/"/g, '&quot;')
 }
 
-/** One URL (the section paths are the same page, canonical to it) plus its screenshots. */
+/** The page (its section paths are the same page, canonical to it) with its screenshots, then the docs. */
 // Google dropped image:caption/title in 2022; only image:loc is read.
 export function buildSitemap(site: string, lastmod: string): string {
   const shots: ShotName[] = ['grid-dark', ...GALLERY.map((s) => s.name)]
@@ -217,6 +270,12 @@ export function buildSitemap(site: string, lastmod: string): string {
       (name) => `    <image:image><image:loc>${xml(shot(site, name))}</image:loc></image:image>`,
     ),
     '  </url>',
+    ...DOCS.flatMap((d) => [
+      '  <url>',
+      `    <loc>${xml(docUrl(site, d))}</loc>`,
+      `    <lastmod>${lastmod}</lastmod>`,
+      '  </url>',
+    ]),
     '</urlset>',
     '',
   ].join('\n')

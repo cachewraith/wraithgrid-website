@@ -15,6 +15,9 @@ const raw = 'https://raw.githubusercontent.com/cachewraith/wraithgrid/main/'
 const shots = [
   'grid-dark',
   'grid-light',
+  'chat',
+  'slash',
+  'usage',
   'diff',
   'palette',
   'new-pane',

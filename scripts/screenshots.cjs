@@ -118,13 +118,16 @@ function setup(home, userData) {
     icon,
     folderId,
   })
-  const pane = (id, accountId, dir) => ({
+  const pane = (id, accountId, dir, chat = null) => ({
     id,
     accountId,
     cwd: `~/code/${dir}`,
     args: [],
     shell: false,
-    title: dir,
+    title: chat?.title ?? dir,
+    view: chat ? 'chat' : 'terminal',
+    chatSessionId: chat ? `s-${dir}` : null,
+    hasConversation: !!chat,
   })
   fs.mkdirSync(userData, { recursive: true })
   fs.writeFileSync(
@@ -148,10 +151,10 @@ function setup(home, userData) {
           color: '#7c5cff',
           layout: null,
           panes: [
-            pane('p1', 'a-work', 'api-server'),
+            pane('p1', 'a-work', 'api-server', { title: 'Rate limit /login' }),
             pane('p2', 'a-personal', 'web-app'),
             pane('p3', 'a-acme', 'infra'),
-            pane('p4', 'a-work', 'mobile'),
+            pane('p4', 'a-work', 'mobile', { title: 'Offline sync tests' }),
           ],
         },
         {
@@ -169,10 +172,147 @@ function setup(home, userData) {
         checkUpdatesOnLaunch: false,
         notifyPanes: false,
         theme: 'dark',
-        accent: 'violet',
+        defaultAccountId: 'a-work',
       },
     }),
   )
+  stageChats(userData)
+  stageUsage(userData)
+}
+
+const tool = (id, name, toolKind, subtitle, output, preview = null) => ({
+  kind: 'tool',
+  id,
+  name,
+  toolKind,
+  subtitle,
+  preview,
+  output,
+  isError: false,
+  approval: null,
+})
+
+/** The two chat panes' conversations, as the app saves a chat view (userData/chats). */
+function stageChats(userData) {
+  const dir = path.join(userData, 'chats')
+  fs.mkdirSync(dir, { recursive: true })
+  const save = (id, items) =>
+    fs.writeFileSync(
+      path.join(dir, `${id}.json`),
+      JSON.stringify({
+        v: 1,
+        sessionId: `s-${id}`,
+        model: 'claude-opus-5-5',
+        seq: 40,
+        models: [],
+        items,
+      }),
+    )
+  save('p1', [
+    {
+      kind: 'user',
+      id: 'u1',
+      text: 'Add rate limiting to the /login endpoint: five attempts a minute per IP',
+      images: 0,
+    },
+    {
+      kind: 'assistant',
+      id: 'a1',
+      text: "I'll put `express-rate-limit` in front of the login route and add a test for the limit.",
+    },
+    tool('t1', 'Read', 'read', 'src/routes/auth.ts', 'Read 7 lines'),
+    tool('t2', 'Bash', 'shell', 'pnpm add express-rate-limit', '+ express-rate-limit 8.1.0', {
+      type: 'code',
+      text: 'pnpm add express-rate-limit',
+    }),
+    tool('t3', 'Edit', 'edit', 'src/routes/auth.ts', 'Updated', {
+      type: 'diff',
+      path: 'src/routes/auth.ts',
+      before: AUTH_BEFORE,
+      after: AUTH_AFTER,
+    }),
+    tool('t4', 'Bash', 'shell', 'pnpm test auth', '✓ 23 passed (1.4s)', {
+      type: 'code',
+      text: 'pnpm test auth',
+    }),
+    {
+      kind: 'assistant',
+      id: 'a2',
+      text: "Done. `/login` now allows **five attempts per minute** per IP; the sixth gets a `429`:\n\n```ts\nconst loginLimiter = rateLimit({ windowMs: 60_000, max: 5 })\nrouter.post('/login', loginLimiter, login)\n```\n\nThe 23 auth tests pass. I left a `test.todo` for the 429 case in `test/auth.limit.test.ts`.",
+    },
+    { kind: 'turn', id: 'r1', costUsd: 0.42, durationMs: 48000, error: null },
+  ])
+  save('p4', [
+    { kind: 'user', id: 'u1', text: 'Write tests for the offline sync queue', images: 0 },
+    tool('t1', 'TodoWrite', 'todo', 'Plan', 'Updated', {
+      type: 'todos',
+      items: [
+        { text: 'Read the queue and its retry logic', status: 'done' },
+        { text: 'Cover retry, ordering and conflicts', status: 'done' },
+        { text: 'Run the suite', status: 'done' },
+      ],
+    }),
+    tool('t2', 'Read', 'read', 'lib/sync/queue.dart', 'Read 96 lines'),
+    tool('t3', 'Write', 'edit', 'test/sync/queue_test.dart', 'Wrote 74 lines'),
+    tool('t4', 'Bash', 'shell', 'flutter test test/sync', '✓ 11 passed', {
+      type: 'code',
+      text: 'flutter test test/sync',
+    }),
+    {
+      kind: 'assistant',
+      id: 'a1',
+      text: 'Added **11 tests** covering retry with backoff, ordering after a reconnect, and conflict handling when the server copy changed.',
+    },
+    { kind: 'turn', id: 'r1', costUsd: 0.18, durationMs: 31000, error: null },
+  ])
+}
+
+/** A month of chat usage and both claude accounts' limits (userData/usage.json). */
+function stageUsage(userData) {
+  const now = Date.now()
+  const day = (ms) => {
+    const d = new Date(ms)
+    const p = (n) => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+  }
+  const chats = [
+    ['p1', 'ws-main', 'Rate limit /login', 'a-work', 1.1],
+    ['p4', 'ws-main', 'Offline sync tests', 'a-work', 0.6],
+    ['p9', 'ws-side', 'Plan the docs site', 'a-work', 0.4],
+    ['p8', 'ws-main', 'Bump the staging node pool', 'a-acme', 0.5],
+  ]
+  const buckets = []
+  for (let i = 0; i < 30; i++)
+    for (const [paneId, workspaceId, title, accountId, scale] of chats) {
+      const c = Math.max(0, (Math.sin(i * 0.8 + scale * 7) + 1.15) * scale)
+      if (c < 0.15) continue
+      buckets.push({
+        day: day(now - i * 86_400_000),
+        accountId,
+        workspaceId,
+        paneId,
+        title,
+        costUsd: c,
+        input: 900 * c,
+        output: 8000 * c,
+        cacheRead: 140_000 * c,
+        cacheWrite: 18_000 * c,
+        turns: Math.ceil(c * 5),
+      })
+    }
+  const limits = {
+    'a-work': {
+      fiveHour: { utilization: 0.42, resetsAt: now + 8_040_000 },
+      sevenDay: { utilization: 0.58, resetsAt: now + 3 * 86_400_000 },
+      at: now - 120_000,
+    },
+    'a-acme': {
+      fiveHour: { utilization: 0.91, resetsAt: now + 1_560_000 },
+      sevenDay: { utilization: 0.72, resetsAt: now + 5 * 86_400_000 },
+      at: now - 300_000,
+    },
+  }
+  fs.writeFileSync(path.join(userData, 'usage.json'), JSON.stringify({ buckets, limits }))
 }
 
 /** claude, gemini and agy on PATH, all pointing at the demo script. */
@@ -208,15 +348,13 @@ function fakeBin(tmp) {
   try {
     await win.setViewportSize({ width: W, height: H })
     await win.getByRole('button', { name: '2×2 grid' }).click()
-    await win
-      .locator('section.pane')
-      .first()
-      .click({ position: { x: 300, y: 200 } })
-    // Long enough for every pane to print and for the git chips to poll.
-    await pause(4500)
+    const pane = (n) => win.locator('section.pane').nth(n)
+    await pane(0).locator('.ph-title').click()
+    // Long enough for every pane to print, the chats to start and the git chips to poll.
+    await pause(5000)
     await shot('grid-dark')
 
-    await win.locator('section.pane').first().locator('.gitc').click()
+    await pane(0).locator('.gitc').click()
     await pause(1200)
     await shot('diff')
     await win.keyboard.press('Control+Shift+D')
@@ -236,17 +374,32 @@ function fakeBin(tmp) {
     await win.keyboard.press('Escape')
     await pause(300)
 
-    await win
-      .locator('.sb-sec, section, div')
-      .filter({ hasText: /^Accounts/ })
-      .getByRole('button', { name: 'Manage', exact: true })
-      .last()
-      .click()
+    // One chat, zoomed: the conversation, then the / menu over it.
+    await pane(0).locator('.ph-title').click()
+    await win.keyboard.press('Control+Shift+Z')
+    await pause(800)
+    await shot('chat')
+    const box = pane(0).getByLabel('Message', { exact: true })
+    await box.fill('/')
+    await box.pressSequentially('te')
+    await pause(500)
+    await shot('slash')
+    await box.fill('')
+    await win.keyboard.press('Control+Shift+Z')
+    await pause(400)
+
+    await win.locator('.u-pill').click()
+    await pause(900)
+    await shot('usage')
+
+    await win.getByRole('button', { name: /Switch account/ }).click()
+    await win.getByRole('menuitem', { name: 'Manage accounts' }).click()
     await pause(800)
     await shot('accounts')
 
     // Mods: from the installed mods down, so the catalog shows below them.
-    await win.getByRole('button', { name: 'Mods', exact: true }).click()
+    await win.getByRole('button', { name: 'More' }).click()
+    await win.getByRole('menuitem', { name: 'Mods' }).click()
     await win.getByText('most installed first').waitFor()
     await win
       .locator('h2.sgrp', { hasText: 'Installed' })
@@ -254,17 +407,17 @@ function fakeBin(tmp) {
     await pause(500)
     await shot('mods')
 
-    // Settings opens at General, which shows this run's temp paths; start at Appearance.
-    await win.getByRole('button', { name: 'Settings' }).click()
+    await win.getByRole('button', { name: 'More' }).click()
+    await win.getByRole('menuitem', { name: 'Settings' }).click()
+    await win.getByRole('tab', { name: 'Appearance' }).click()
     await pause(800)
-    await win
-      .locator('h2.sgrp', { hasText: 'Appearance' })
-      .evaluate((el) => el.scrollIntoView({ block: 'start' }))
-    await pause(500)
     await shot('settings')
 
-    await win.getByRole('radio', { name: 'Light' }).first().click()
-    await win.locator('button', { hasText: 'main' }).first().click()
+    await win
+      .getByRole('radiogroup', { name: 'Theme' })
+      .getByRole('radio', { name: 'Daylight' })
+      .click()
+    await win.locator('.top .btn.gh').first().click()
     await pause(2500)
     await shot('grid-light')
   } finally {

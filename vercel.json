@@ -1,6 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/:section(features|install|shortcuts|faq)", "destination": "/index.html" }
+    { "source": "/:section(features|install|shortcuts|faq)", "destination": "/index.html" },
+    { "source": "/docs", "destination": "/docs/index.html" },
+    { "source": "/docs/:page", "destination": "/docs/:page/index.html" }
   ]
 }

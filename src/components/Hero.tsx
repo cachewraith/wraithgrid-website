@@ -47,8 +47,7 @@ export function Hero({ os, release, downloads }: Props) {
             <ExternalLink href={RELEASES_URL}>Latest release</ExternalLink>
           )}
           <span>
-            New in 1.9: Codex, opencode, Cursor and Copilot panes, and conversations that continue
-            after a restart.
+            New in 1.11: chat panes, themes, usage limits, / for skills, and plan or auto mode.
           </span>
         </p>
         <h1 id="hero-title" data-intro="2">

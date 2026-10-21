@@ -63,6 +63,8 @@ function onClick(e: MouseEvent) {
   const isHome = link.pathname === BASE
   const id = sectionFromUrl(link.pathname, '', BASE)
   if (!isHome && !id) return
+  // On a docs page the sections are on another page: let the browser go there.
+  if (!document.getElementById('features')) return
   e.preventDefault()
   const path = id ? sectionPath(id, BASE) : BASE
   if (location.pathname !== path || location.hash) history.pushState(null, '', path)
