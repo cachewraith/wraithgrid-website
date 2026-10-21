@@ -1,0 +1,5 @@
+[install]
+# A flat node_modules, like the app repo.
+linker = "hoisted"
+# Supply-chain guard: only install versions published at least a day ago.
+minimumReleaseAge = 86400

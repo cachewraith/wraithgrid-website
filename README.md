@@ -6,29 +6,29 @@ React 19, TypeScript and plain CSS. Its only runtime dependencies are `react` an
 ## Run
 
 ```sh
-pnpm install
-pnpm dev          # http://localhost:5173
+bun install
+bun run dev       # http://localhost:5173
 ```
 
 The dev server drops the CSP meta tag, because Vite's hot-reload preamble is an inline script.
 To test the page under the real CSP, use a production build:
 
 ```sh
-pnpm build && pnpm preview    # http://localhost:4173
+bun run build && bun run preview    # http://localhost:4173
 ```
 
 ## Check
 
 ```sh
-pnpm lint         # ESLint + Prettier --check
-pnpm typecheck
-pnpm test         # Vitest: release lookup, OS detection, theme storage
-pnpm format       # Prettier --write
+bun run lint      # ESLint + Prettier --check
+bun run typecheck
+bun run test      # Vitest: release lookup, OS detection, theme storage, docs
+bun run format    # Prettier --write
 ```
 
 ## Build
 
-`pnpm build` writes a static site to `dist/`, served from `/`. It runs in three steps:
+`bun run build` writes a static site to `dist/`, served from `/`. It runs in three steps:
 
 1. `vite build`: the client bundle and `index.html`.
 2. `vite build --ssr src/entry-server.tsx`: the same page for Node, into `dist-ssr/` (deleted
@@ -48,7 +48,7 @@ the app's README, `docs/WHATS-NEW.md` and `docs/THEMES.md`. The theme cards' col
 
 `SITE_URL` sets the absolute URL used for canonical, Open Graph, JSON-LD, `robots.txt`,
 `sitemap.xml` and `llms.txt` (see Deploy). To serve from a subpath instead, set `BASE_PATH`
-(e.g. `/docs/`) for both `pnpm build` and `pnpm preview`.
+(e.g. `/docs/`) for both `bun run build` and `bun run preview`.
 
 ## SEO and GEO
 
@@ -74,14 +74,15 @@ verification needs nothing here.
 
 ## Deploy (Vercel)
 
-Import the repo in Vercel. It detects Vite, so the defaults work:
+Import the repo in Vercel. It detects Vite; `vercel.json` sets Bun for install and build, so the
+dashboard settings don't matter:
 
-| Setting          | Value          |
-| ---------------- | -------------- |
-| Framework        | Vite           |
-| Install command  | `pnpm install` |
-| Build command    | `pnpm build`   |
-| Output directory | `dist`         |
+| Setting          | Value                           |
+| ---------------- | ------------------------------- |
+| Framework        | Vite                            |
+| Install command  | `bun install --frozen-lockfile` |
+| Build command    | `bun run build`                 |
+| Output directory | `dist`                          |
 
 You don't need to set `BASE_PATH`, because Vercel serves the site from `/`. Canonical, Open Graph,
 `robots.txt` and `sitemap.xml` use the project's production domain
@@ -104,9 +105,9 @@ changes, and `scripts/demo-agent.sh` standing in for the three CLIs. Then it sav
 `WRAITHGRID_DIR`), built, and Linux or macOS:
 
 ```sh
-(cd ../wraithgrid && pnpm install && pnpm build)
+(cd ../wraithgrid && bun install && bun run build)
 node scripts/screenshots.cjs        # grid-dark, grid-light, diff, palette, new-pane, accounts, mods, settings
-pnpm assets                         # icon from the app repo + WebP at 960 px and full width (ImageMagick)
+bun run assets                      # icon from the app repo + WebP at 960 px and full width (ImageMagick)
 ```
 
 The page serves WebP and falls back to PNG. If a screenshot's pixel size changes, update

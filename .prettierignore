@@ -1,4 +1,4 @@
 dist
-pnpm-lock.yaml
+bun.lock
 public/icon.svg
 dist-ssr

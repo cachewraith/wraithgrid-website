@@ -1,11 +1,11 @@
 // Takes the page's screenshots from a real Wraithgrid build, with demo accounts, git repos and
 // scripted agent output (scripts/demo-agent.sh stands in for claude, gemini and agy).
 //
-//   cd ../wraithgrid && pnpm build                       # the app must be built first
+//   cd ../wraithgrid && bun run build                    # the app must be built first
 //   node scripts/screenshots.cjs                         # writes public/screenshots/*.png
 //   WRAITHGRID_DIR=/path node scripts/screenshots.cjs    # explicit app checkout
 //
-// Linux/macOS only. Then run `pnpm assets` to write the WebP versions.
+// Linux/macOS only. Then run `bun run assets` to write the WebP versions.
 const { createRequire } = require('node:module')
 const { execFileSync } = require('node:child_process')
 const fs = require('node:fs')

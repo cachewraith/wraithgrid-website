@@ -2,8 +2,8 @@
 // public/screenshots/*.png (made by scripts/screenshots.cjs) at 960 px and full width.
 // Needs ImageMagick (`magick`) on PATH.
 //
-//   pnpm assets                      # uses ../wraithgrid if present, else GitHub
-//   WRAITHGRID_DIR=/path pnpm assets # explicit local checkout
+//   bun run assets                   # uses ../wraithgrid if present, else GitHub
+//   WRAITHGRID_DIR=/path bun run assets # explicit local checkout
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
