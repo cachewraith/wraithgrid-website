@@ -34,9 +34,10 @@ export function HowItWorks() {
             ))}
           </div>
           <p>
-            Wraithgrid never reads, copies or proxies anything in those folders. Antigravity CLI
-            keeps its sign-in in the system keyring, so every agy account on one computer shares a
-            single Google login.
+            Codex, Cursor and Copilot get <code>CODEX_HOME</code>, <code>CURSOR_CONFIG_DIR</code> or{' '}
+            <code>COPILOT_HOME</code> the same way. Wraithgrid never reads, copies or proxies
+            anything in those folders. Antigravity and opencode have no per-account folder, so their
+            accounts on one computer share a single login.
           </p>
         </div>
       </div>

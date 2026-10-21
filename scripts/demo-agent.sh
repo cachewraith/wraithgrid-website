@@ -3,6 +3,25 @@
 # for the pane's folder, then waits. api-server keeps a spinner going so it reads as running.
 cli=$(basename "$0")
 [ "$1" = "--version" ] && { echo "2.4.1 ($cli)"; exit 0; }
+# `claude plugin list`: what the Mods screen asks each account for. The catalog is the eight
+# most installed entries of the official marketplace, as claude listed them on 2026-10-13.
+if [ "$1" = "plugin" ]; then
+  mod() { printf '{"id":"%s@claude-plugins-official","version":"%s","scope":"user","enabled":%s}' "$1" "$2" "$3"; }
+  case "$3" in
+  --available)
+    cat <<'JSON'
+{"installed": [], "available": [{"pluginId": "frontend-design@claude-plugins-official", "name": "frontend-design", "description": "Create distinctive, production-grade frontend interfaces with high design quality. Generates creative, polished code that avoids generic AI aesthetics.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 1290640, "source": {}}, {"pluginId": "superpowers@claude-plugins-official", "name": "superpowers", "description": "Superpowers teaches Claude brainstorming, subagent driven development with built in code review, systematic debugging, and red/green TDD. Additionally, it teaches Claude how to author and test new skills.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 1153057, "source": {"url": "https://github.com/obra/superpowers.git"}}, {"pluginId": "code-review@claude-plugins-official", "name": "code-review", "description": "Automated code review for pull requests using multiple specialized agents with confidence-based scoring to filter false positives", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 492072, "source": {}}, {"pluginId": "context7@claude-plugins-official", "name": "context7", "description": "Upstash Context7 MCP server for up-to-date documentation lookup. Connects to Context7’s hosted remote MCP server (https://mcp.context7.com/mcp) — no local Node.js or npx required — to pull version-specific documentation and code examples directly from source repositories into your LLM context. Works anonymously out of the box; set CONTEXT7_API_KEY for higher rate limits.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 458090, "source": {}}, {"pluginId": "skill-creator@claude-plugins-official", "name": "skill-creator", "description": "Create new skills, improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, update or optimize an existing skill, run evals to test a skill, or benchmark skill performance with variance analysis.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 440508, "source": {}}, {"pluginId": "code-simplifier@claude-plugins-official", "name": "code-simplifier", "description": "Agent that simplifies and refines code for clarity, consistency, and maintainability while preserving functionality. Focuses on recently modified code.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 382698, "source": {}}, {"pluginId": "playwright@claude-plugins-official", "name": "playwright", "description": "Browser automation and end-to-end testing MCP server by Microsoft. Enables Claude to interact with web pages, take screenshots, fill forms, click elements, and perform automated browser testing workflows.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 367020, "source": {}}, {"pluginId": "github@claude-plugins-official", "name": "github", "description": "Official GitHub MCP server for repository management. Create issues, manage pull requests, review code, search repositories, and interact with GitHub’s full API directly from Claude Code.", "marketplaceName": "claude-plugins-official", "version": null, "installCount": 354371, "source": {}}]}
+JSON
+    ;;
+  *)
+    case "$(basename "$CLAUDE_CONFIG_DIR")" in
+    work) echo "[$(mod superpowers 5.0.7 true),$(mod code-review 1.0.0 true),$(mod playwright 1.0.0 false)]" ;;
+    client-acme) echo "[$(mod github 1.0.0 true)]" ;;
+    *) echo "[]" ;;
+    esac ;;
+  esac
+  exit 0
+fi
 E=$'\e'; R="$E[0m"; B="$E[1m"; D="$E[2m"; G="$E[32m"; RD="$E[31m"; Y="$E[33m"; O="$E[38;5;209m"; C="$E[36m"; BL="$E[38;5;75m"; M="$E[38;5;141m"
 dot="${G}●${R}"
 tool() { printf '%s %s%s%s(%s)\n' "$dot" "$B" "$1" "$R" "$2"; }

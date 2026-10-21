@@ -12,7 +12,16 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const source = resolve(root, process.env.WRAITHGRID_DIR ?? '../wraithgrid')
 const raw = 'https://raw.githubusercontent.com/cachewraith/wraithgrid/main/'
-const shots = ['grid-dark', 'grid-light', 'diff', 'palette', 'new-pane', 'accounts', 'settings']
+const shots = [
+  'grid-dark',
+  'grid-light',
+  'diff',
+  'palette',
+  'new-pane',
+  'accounts',
+  'mods',
+  'settings',
+]
 const files = [
   ['build/icon.svg', 'icon.svg'],
   ['build/icon.png', 'icon.png'],

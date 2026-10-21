@@ -5,7 +5,7 @@ export const SHOT_WIDTH = 1920
 export const SHOT_HEIGHT = 1080
 
 export type ShotName =
-  'grid-dark' | 'grid-light' | 'diff' | 'palette' | 'new-pane' | 'accounts' | 'settings'
+  'grid-dark' | 'grid-light' | 'diff' | 'palette' | 'new-pane' | 'accounts' | 'mods' | 'settings'
 
 export interface Shot {
   name: ShotName
@@ -18,9 +18,14 @@ export const HERO_ALT =
 
 export const GALLERY: readonly Shot[] = [
   {
+    name: 'mods',
+    title: 'Mods',
+    alt: 'The Mods screen: the mods the claude accounts have installed as one list, each with Add to all accounts, Update, Uninstall and an on/off switch, and below them a searchable catalog of the marketplace with install counts and an Install button per mod.',
+  },
+  {
     name: 'diff',
     title: 'Changes',
-    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server pane: package.json and src/routes/auth.ts with added and removed lines, and one untracked test file.',
+    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server pane: package.json and src/routes/auth.ts with added and removed lines, one untracked test file, and below them a commit message box with Commit all, Push and Pull request buttons.',
   },
   {
     name: 'palette',
@@ -56,20 +61,20 @@ export interface Feature {
 
 export const FEATURES: readonly Feature[] = [
   {
-    title: 'Claude, Gemini and Antigravity',
-    body: 'Each account picks the CLI its panes run: Claude Code, Gemini CLI or Antigravity CLI (agy). Mix all three in one grid. Wraithgrid finds them on your PATH.',
+    title: 'Seven agent CLIs',
+    body: 'Each account picks the CLI its panes run: Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent or Copilot CLI. Mix them in one grid. Wraithgrid finds them on your PATH, or you set the path.',
   },
   {
     title: 'Logins stay separate',
-    body: 'Every claude and gemini account gets its own config folder, so its login and history never touch another account. agy keeps one sign-in in your system keyring.',
+    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Codex, Cursor and Copilot may keep the sign-in in your keyring; agy and opencode share one.',
   },
   {
-    title: 'Git in every pane',
-    body: 'The pane header shows the branch and how many files changed. Click it, or press Ctrl+Shift+D, for the diff in a Changes panel you can drag wider.',
+    title: 'Claude mods',
+    body: 'Panes draw what claude mods draw: side panes, a band above the prompt, status lines, toasts. The Mods screen searches the marketplaces, installs, updates and uninstalls for every account, and manages marketplaces.',
   },
   {
-    title: 'Worktrees',
-    body: 'Open a new pane on a fresh branch in its own git worktree, so two agents can work on one repo without editing the same files.',
+    title: 'Git and worktrees',
+    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push and open a pull request from the same panel. Open a pane on a fresh branch in its own git worktree, and remove it when its last pane closes.',
   },
   {
     title: 'Paste screenshots',
@@ -77,11 +82,11 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Know which pane needs you',
-    body: 'Each pane shows running, idle or needs approval. A desktop notification tells you when a pane you aren’t looking at finishes or asks.',
+    body: 'Each pane shows running, needs approval, done or idle. A desktop notification tells you when a pane you aren’t looking at finishes or asks.',
   },
   {
     title: 'Search everything',
-    body: 'Ctrl+Shift+P finds any pane in any workspace, switches workspace, opens an account in a new pane or runs an app command.',
+    body: 'Ctrl+Shift+P finds any pane in any workspace, switches workspace, opens an account in a new pane or runs an app command. Rebind the app shortcuts in Settings.',
   },
   {
     title: 'Workspaces and layouts',
@@ -96,8 +101,8 @@ export const FEATURES: readonly Feature[] = [
     body: 'Plain shell panes run bash, zsh, fish, nushell, PowerShell, Git Bash, WSL or anything you name. Dark or light, five accents, six terminal palettes.',
   },
   {
-    title: 'Updates in place',
-    body: 'You get one notification per new version. Update & restart in Settings installs it and relaunches (on macOS it opens the release page).',
+    title: 'Pick up where you left off',
+    body: 'When Wraithgrid restarts, each pane you prompted continues its last conversation (claude --continue, codex resume --last). Updates install from Settings with Update & restart.',
   },
   {
     title: 'Nothing leaves your machine',
@@ -156,15 +161,27 @@ export interface Faq {
 export const FAQS: readonly Faq[] = [
   {
     q: 'Is Wraithgrid official?',
-    a: 'No. It is an independent open-source project, not affiliated with Anthropic or Google. It runs the official claude, gemini and agy CLIs unchanged.',
+    a: 'No. It is an independent open-source project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
   },
   {
     q: 'Does it see my login or my code?',
-    a: 'No. For each pane it sets CLAUDE_CONFIG_DIR (claude) or GEMINI_CLI_HOME (gemini) to that account’s folder and starts the CLI. It never reads, copies or proxies anything inside those folders.',
+    a: 'No. For each pane it points the CLI at that account’s folder through the CLI’s own variable (CLAUDE_CONFIG_DIR, GEMINI_CLI_HOME, CODEX_HOME, CURSOR_CONFIG_DIR or COPILOT_HOME) and starts it. It never reads, copies or proxies anything inside those folders.',
   },
   {
-    q: 'Can two Antigravity accounts use different Google logins?',
-    a: 'Not on one computer. agy keeps its sign-in in the system keyring, so every Antigravity account shares it. That is a limit of agy itself. Claude and Gemini accounts each keep their own login.',
+    q: 'Does every CLI keep a separate login per account?',
+    a: 'Claude and Gemini accounts do. Antigravity and opencode have no per-account folder, so their accounts share one login on a computer. Codex, Cursor and Copilot keep settings and history per account, but may keep the sign-in in the system keyring, and then their accounts share it too.',
+  },
+  {
+    q: 'Does it work with claude mods?',
+    a: 'Yes, since v1.7. Mods run inside each claude pane, and the Mods screen lists what every account has installed, lets you search, install, update and uninstall for every account, manages marketplaces, and loads a mod folder you are building into every pane. Wraithgrid asks the account’s own claude for all of it. Pictures a mod draws show as their text description.',
+  },
+  {
+    q: 'Do my conversations survive a restart?',
+    a: 'Yes, since v1.9. A pane you sent a prompt to starts with its CLI’s continue option when Wraithgrid opens again, so the conversation goes on. Turn it off per pane by right-clicking its header. Running agents still stop when Wraithgrid quits.',
+  },
+  {
+    q: 'Can I change the keyboard shortcuts?',
+    a: 'Yes, since v1.9: Settings → Keyboard shortcuts rebinds search, new pane, close pane, zoom, the git diff and the shortcuts sheet. A new shortcut needs Ctrl (⌘ on macOS) with Shift or Alt, so the terminal keeps its own keys.',
   },
   {
     q: 'Does it run on macOS?',
@@ -240,3 +257,7 @@ export function installFile(tab: InstallTab, release: Release | null): string {
 }
 
 export const VERIFY_COMMAND = 'sha256sum -c SHA256SUMS.txt --ignore-missing'
+
+/** scripts/install.sh in the app repo (since v1.9): picks the package, checks SHA256SUMS. */
+export const INSTALL_SCRIPT =
+  'curl -fsSL https://raw.githubusercontent.com/cachewraith/wraithgrid/main/scripts/install.sh | sh'

@@ -89,13 +89,13 @@ in `vercel.json`.
 
 The screenshots are taken from a real Wraithgrid build. `scripts/screenshots.cjs` launches the
 app with a demo config: five accounts (claude, gemini, agy), four git repos with uncommitted
-changes, and `scripts/demo-agent.sh` standing in for the three CLIs. Then it saves seven
+changes, and `scripts/demo-agent.sh` standing in for the three CLIs. Then it saves eight
 1920×1080 PNGs to `public/screenshots/`. It needs the app checkout next to this repo (or
 `WRAITHGRID_DIR`), built, and Linux or macOS:
 
 ```sh
 (cd ../wraithgrid && pnpm install && pnpm build)
-node scripts/screenshots.cjs        # grid-dark, grid-light, diff, palette, new-pane, accounts, settings
+node scripts/screenshots.cjs        # grid-dark, grid-light, diff, palette, new-pane, accounts, mods, settings
 pnpm assets                         # icon from the app repo + WebP at 960 px and full width (ImageMagick)
 ```
 
