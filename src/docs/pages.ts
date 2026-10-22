@@ -1,5 +1,5 @@
 /**
- * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.11);
+ * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.14);
  * don't add any the app doesn't have. Inline text: `code`, **bold**, [label](/path), ⟦key⟧.
  */
 import type { DocPage } from '../lib/docs'
@@ -43,7 +43,7 @@ export const DOCS: readonly DocPage[] = [
             steps: [
               'Click the account button at the bottom of the sidebar, then **New account**.',
               'Pick a name and the **CLI** it runs. To keep a login you already have, use **Import ~/.claude** instead: nothing is copied.',
-              'Press **Login**: a pane opens running the CLI under that account. Run `/login` and finish in your browser.',
+              'Press **Login**. For claude a dialog runs its own sign-in: open the sign-in page, paste the code if it shows one. Other CLIs sign in from a terminal the first time a pane starts.',
             ],
           },
           {
@@ -57,8 +57,8 @@ export const DOCS: readonly DocPage[] = [
         blocks: [
           {
             steps: [
-              'In the sidebar, **+** next to **Projects** creates a project.',
-              'Press **New chat** (⟦Ctrl⟧ ⟦Shift⟧ ⟦N⟧): pick the account and the folder. Turn on **Work on a new branch** to give the chat its own git worktree.',
+              'In the sidebar, **+** next to **Projects** opens **New project**: pick the folder (it fills in the name), the account its chats use and the machine it runs on.',
+              'Press **New chat** (⟦Ctrl⟧ ⟦Shift⟧ ⟦N⟧): the project’s account and folder are picked already, so ⟦Enter⟧ starts it. **More options** has **Work on a new branch**, which gives the chat its own git worktree.',
               'Type your request and press ⟦Enter⟧.',
             ],
           },
@@ -101,7 +101,8 @@ export const DOCS: readonly DocPage[] = [
           },
           {
             list: [
-              'Paste a screenshot with ⟦Ctrl⟧ ⟦V⟧ in the message box.',
+              'Paste a screenshot with ⟦Ctrl⟧ ⟦V⟧, or attach files with the paperclip or by dropping them (up to 20): images go as images, other files as paths claude reads.',
+              'Close to a limit? The account chip under the message box → **Continue as…** carries the chat on under another claude account.',
               'Stop a turn with **Stop** or ⟦Esc⟧. A message sent while one runs waits its turn.',
               'Start over with the new-conversation button in the pane header, or `/new`.',
               'The Chat / Terminal switch in the header shows the CLI’s own screen, for signing in, `/config` and other interactive commands.',
@@ -199,7 +200,7 @@ export const DOCS: readonly DocPage[] = [
         title: 'Projects and history',
         blocks: [
           {
-            p: 'Each project has a screen: click it in the sidebar. **Open** lists its chats with what they are doing; **History** keeps chats you closed (the last 100), with search. Clicking one carries on the conversation where it stopped. A chat is named after its first message until you rename it.',
+            p: 'Each project has a screen: click it in the sidebar. **Open** lists its chats with what they are doing; **History** keeps chats you closed (the last 100), with search. Clicking one carries on the conversation where it stopped; the trash button deletes it after asking. A chat is named after its first message until you rename it.',
           },
         ],
       },

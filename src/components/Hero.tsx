@@ -47,7 +47,8 @@ export function Hero({ os, release, downloads }: Props) {
             <ExternalLink href={RELEASES_URL}>Latest release</ExternalLink>
           )}
           <span>
-            New in 1.11: chat panes, themes, usage limits, / for skills, and plan or auto mode.
+            New in 1.14: a New project screen and a clearer Usage screen. Since 1.12: git History
+            and Pull, continue a chat as another account, attach files, sign in without a terminal.
           </span>
         </p>
         <h1 id="hero-title" data-intro="2">

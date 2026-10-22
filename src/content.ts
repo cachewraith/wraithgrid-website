@@ -87,7 +87,7 @@ export interface Feature {
 export const FEATURES: readonly Feature[] = [
   {
     title: 'Chat or terminal',
-    body: 'A claude pane can be a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
+    body: 'A claude pane can be a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals, attached files. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
   },
   {
     title: 'Model, effort and mode',
@@ -96,6 +96,10 @@ export const FEATURES: readonly Feature[] = [
   {
     title: 'Skills with /',
     body: 'Type / in a chat to list that account’s skills and commands, with what each does. Pick one with the arrow keys and Enter.',
+  },
+  {
+    title: 'Continue as another account',
+    body: 'Close to a limit? The account chip under the message box carries the chat on under another claude account, in place, with a divider marking the switch.',
   },
   {
     title: 'Usage and limits',
@@ -131,11 +135,11 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Git and worktrees',
-    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push and open a pull request from the same panel. Open a pane on a fresh branch in its own git worktree, and switch branches from its header.',
+    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push, pull and open a pull request from the same panel. History shows every branch as a commit graph. Open a pane on a fresh branch in its own git worktree, and switch branches from its header.',
   },
   {
     title: 'Projects and layouts',
-    body: 'Each project has a screen with its open chats and History, so a closed chat carries on where it stopped. One pane, two, 2×2 or three columns; drag to resize or swap. The layout adapts down to a 640 px window.',
+    body: 'New project picks a folder, an account and a machine in one step. Each project has a screen with its open chats and History, so a closed chat carries on where it stopped. One pane, two, 2×2 or three columns; drag to resize or swap. The layout adapts down to a 640 px window.',
   },
   {
     title: 'Know which pane needs you',
@@ -181,13 +185,13 @@ export const HOW_EXAMPLES: readonly PaneExample[] = [
 ]
 
 export const SHORTCUTS: readonly { action: string; keys: readonly string[] }[] = [
-  { action: 'New pane', keys: ['Ctrl', 'Shift', 'N'] },
+  { action: 'New chat', keys: ['Ctrl', 'Shift', 'N'] },
   { action: 'Search panes and commands', keys: ['Ctrl', 'Shift', 'P'] },
   { action: 'Show changes (git diff)', keys: ['Ctrl', 'Shift', 'D'] },
   { action: 'Close pane', keys: ['Ctrl', 'Shift', 'W'] },
   { action: 'Zoom pane', keys: ['Ctrl', 'Shift', 'Z'] },
   { action: 'Move focus', keys: ['Ctrl', 'Alt', 'Arrow'] },
-  { action: 'Switch workspace', keys: ['Ctrl', 'Shift', '1…9'] },
+  { action: 'Switch project', keys: ['Ctrl', 'Shift', '1…9'] },
   { action: 'Paste a screenshot', keys: ['Ctrl', 'V'] },
   { action: 'New line in claude', keys: ['Shift', 'Enter'] },
   { action: 'Skills and commands in a chat', keys: ['/'] },
@@ -209,7 +213,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Does it see my login or my code?',
-    a: 'No. For each pane it points the CLI at that account’s folder through the CLI’s own variable (CLAUDE_CONFIG_DIR, GEMINI_CLI_HOME, CODEX_HOME, CURSOR_CONFIG_DIR or COPILOT_HOME) and starts it. It never reads, copies or proxies anything inside those folders.',
+    a: 'No. For each pane it points the CLI at that account’s folder through the CLI’s own variable (CLAUDE_CONFIG_DIR, GEMINI_CLI_HOME, CODEX_HOME, CURSOR_CONFIG_DIR or COPILOT_HOME) and starts it. It never reads, copies or proxies anything inside those folders, except one conversation when you continue a chat as another account yourself.',
   },
   {
     q: 'Does every CLI keep a separate login per account?',
@@ -222,6 +226,14 @@ export const FAQS: readonly Faq[] = [
   {
     q: 'Can I chat with claude instead of using its terminal?',
     a: 'Yes, since v1.11. New claude panes open as a chat: streamed answers, tool cards, inline approvals, a model, effort and mode picker, and / for skills. It runs the official claude CLI headless with your account, folder, CLAUDE.md, skills and mods. Any pane switches back to the terminal from its header. Other CLIs open as terminals for now.',
+  },
+  {
+    q: 'Do I need a terminal to sign in?',
+    a: 'Not for claude, since v1.12: Login on an account opens a dialog that runs claude’s own sign-in in that account’s folder. Open the sign-in page, paste the code if it shows one, done. Other CLIs still sign in from a terminal the first time a pane starts.',
+  },
+  {
+    q: 'Can I carry on a chat on another account when I hit a limit?',
+    a: 'Yes, since v1.13. The account chip under the message box → Continue as… copies that conversation into the other claude account and carries on there, in place. The original stays, and Usage counts each turn to the account that ran it.',
   },
   {
     q: 'Can I see how close I am to my Claude limits?',
@@ -249,7 +261,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Does it update itself?',
-    a: 'On Windows and Linux, yes: Update & restart in Settings downloads the new version, installs it over the current one and relaunches. The .deb, .rpm and pacman packages ask for your password. On macOS it opens the release page. Versions 1.2.0 and older must be updated by hand once.',
+    a: 'On Windows and Linux, yes: Update & restart in Settings downloads the new version, installs it over the current one and relaunches. The .deb, .rpm and pacman packages ask for your password. On macOS it opens the release page. Settings → About keeps the release notes of each version. Versions 1.2.0 and older must be updated by hand once.',
   },
   {
     q: 'Is it free?',
