@@ -1,4 +1,5 @@
 import { RELEASES_URL, REPO_URL } from '../lib/release'
+import { docsPath } from '../lib/docs'
 import { ExternalLink } from './ExternalLink'
 
 export function Footer() {
@@ -10,6 +11,9 @@ export function Footer() {
           <span>Wraithgrid</span>
         </div>
         <ul className="footer-links">
+          <li>
+            <a href={docsPath('', import.meta.env.BASE_URL)}>Docs</a>
+          </li>
           <li>
             <ExternalLink href={REPO_URL}>GitHub</ExternalLink>
           </li>

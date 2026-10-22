@@ -22,6 +22,42 @@ JSON
   esac
   exit 0
 fi
+# Chat panes run claude headless (`-p --input-format stream-json`): answer its startup
+# handshake with models, commands and the plan in the shapes claude 2.1.306 uses, and reply to
+# messages. The conversations themselves are staged as saved chat views by screenshots.cjs.
+if [[ " $* " == *" --input-format "* ]]; then
+  sid="demo-$(basename "$PWD")"; mode=default; prev=
+  for a in "$@"; do
+    [ "$prev" = "--resume" ] && sid="$a"
+    [ "$prev" = "--permission-mode" ] && mode="$a"
+    prev="$a"
+  done
+  plan="Claude Pro"; [ "$(basename "$CLAUDE_CONFIG_DIR")" = work ] && plan="Claude Max"
+  say() { printf '%s\n' "$1"; }
+  field() { sed -E "s/.*\"$1\":\"([^\"]*)\".*/\\1/" <<<"$2"; }
+  efforts='["low","medium","high","xhigh","max"]'
+  models="[{\"value\":\"default\",\"displayName\":\"Default (recommended)\",\"description\":\"Opus 5.5 · Best for everyday, complex tasks\",\"supportsAutoMode\":true,\"supportsEffort\":true,\"supportedEffortLevels\":$efforts},{\"value\":\"sonnet\",\"displayName\":\"Sonnet 5.5\",\"description\":\"Most efficient for simpler tasks\",\"supportsEffort\":true,\"supportedEffortLevels\":$efforts},{\"value\":\"haiku\",\"displayName\":\"Haiku 5.5\",\"description\":\"Fastest for quick answers\",\"supportsEffort\":true,\"supportedEffortLevels\":$efforts}]"
+  cmd() { printf '{"name":"%s","description":"%s","argumentHint":"%s","aliases":[],"builtin":%s}' "$1" "$2" "$3" "$4"; }
+  commands="[$(cmd superpowers:brainstorming '(superpowers) Explore an idea before you build it' '<idea>' false),$(cmd superpowers:writing-plans '(superpowers) Write a step-by-step plan for a feature' '<feature>' false),$(cmd superpowers:test-driven-development '(superpowers) Red, green, refactor with tests first' '' false),$(cmd code-review:code-review '(code-review) Review the current changes with several agents' '' false),$(cmd frontend-design:frontend-design '(frontend-design) Design and build a distinctive interface' '<screen>' false),$(cmd skill-creator:skill-creator '(skill-creator) Create or improve a skill' '' false),$(cmd compact 'Clear conversation history but keep a summary in context' '<instructions>' true),$(cmd init 'Write a CLAUDE.md for this project' '' true),$(cmd security-review 'Review the pending changes for security issues' '' true),$(cmd doctor 'Check the claude installation' '' true)]"
+  while IFS= read -r line; do
+    case "$line" in
+    *'"subtype":"initialize"'*)
+      say "{\"type\":\"control_response\",\"response\":{\"subtype\":\"success\",\"request_id\":\"$(field request_id "$line")\",\"response\":{\"commands\":$commands,\"models\":$models,\"account\":{\"subscriptionType\":\"$plan\"}}}}"
+      say "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"$sid\",\"model\":\"claude-opus-5-5\",\"permissionMode\":\"$mode\",\"terminal_slash_commands\":[\"doctor\"]}" ;;
+    *'"subtype":"set_permission_mode"'*)
+      mode=$(field mode "$line")
+      say "{\"type\":\"control_response\",\"response\":{\"subtype\":\"success\",\"request_id\":\"$(field request_id "$line")\",\"response\":{\"mode\":\"$mode\"}}}"
+      say "{\"type\":\"system\",\"subtype\":\"status\",\"status\":null,\"permissionMode\":\"$mode\",\"session_id\":\"$sid\"}" ;;
+    *'"subtype":'*)
+      say "{\"type\":\"control_response\",\"response\":{\"subtype\":\"success\",\"request_id\":\"$(field request_id "$line")\"}}" ;;
+    *'"type":"user"'*)
+      say '{"type":"stream_event","event":{"type":"message_start","message":{"id":"m1"}},"parent_tool_use_id":null}'
+      say '{"type":"stream_event","event":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"On it."}},"parent_tool_use_id":null}'
+      say "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"duration_ms\":2100,\"total_cost_usd\":0.031,\"session_id\":\"$sid\"}" ;;
+    esac
+  done
+  exit 0
+fi
 E=$'\e'; R="$E[0m"; B="$E[1m"; D="$E[2m"; G="$E[32m"; RD="$E[31m"; Y="$E[33m"; O="$E[38;5;209m"; C="$E[36m"; BL="$E[38;5;75m"; M="$E[38;5;141m"
 dot="${G}●${R}"
 tool() { printf '%s %s%s%s(%s)\n' "$dot" "$B" "$1" "$R" "$2"; }

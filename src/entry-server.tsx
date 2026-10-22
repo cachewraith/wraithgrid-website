@@ -3,12 +3,22 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { App } from './App'
 
-export { buildLlmsTxt, buildRobotsTxt, buildSitemap, jsonLdScript } from './lib/seo'
+export {
+  buildLlmsTxt,
+  buildRobotsTxt,
+  buildSitemap,
+  docJsonLdScript,
+  docUrl,
+  jsonLdScript,
+} from './lib/seo'
 
-export function render(): string {
+export { DOCS } from './docs/pages'
+export { docsPath } from './lib/docs'
+
+export function render(path: string): string {
   return renderToString(
     <StrictMode>
-      <App />
+      <App path={path} />
     </StrictMode>,
   )
 }

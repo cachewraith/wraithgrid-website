@@ -1,5 +1,6 @@
 import type { ThemeMode } from '../lib/theme'
 import { REPO_URL } from '../lib/release'
+import { docsPath } from '../lib/docs'
 import { sectionPath } from '../lib/sections'
 import { ExternalLink } from './ExternalLink'
 import { GitHubIcon } from './icons'
@@ -9,17 +10,19 @@ const BASE = import.meta.env.BASE_URL
 
 const LINKS = [
   [sectionPath('features', BASE), 'Features'],
+  [docsPath('', BASE), 'Docs'],
   [sectionPath('install', BASE), 'Install'],
-  [sectionPath('shortcuts', BASE), 'Shortcuts'],
   [sectionPath('faq', BASE), 'FAQ'],
 ] as const
 
 interface Props {
+  /** The docs pages mark their nav link as current. */
+  current?: 'docs'
   themeMode: ThemeMode
   onThemeChange: (mode: ThemeMode) => void
 }
 
-export function Nav({ themeMode, onThemeChange }: Props) {
+export function Nav({ current, themeMode, onThemeChange }: Props) {
   return (
     <header className="nav">
       <div className="nav-inner">
@@ -31,12 +34,21 @@ export function Nav({ themeMode, onThemeChange }: Props) {
           <ul>
             {LINKS.map(([href, label]) => (
               <li key={href}>
-                <a href={href}>{label}</a>
+                <a
+                  href={href}
+                  aria-current={current === 'docs' && label === 'Docs' ? 'page' : undefined}
+                >
+                  {label}
+                </a>
               </li>
             ))}
           </ul>
         </nav>
         <div className="nav-actions">
+          {/* Phones have no section links: Docs gets its own. */}
+          <a className="nav-docs" href={docsPath('', BASE)}>
+            Docs
+          </a>
           <ExternalLink className="icon-button" href={REPO_URL} title="Wraithgrid on GitHub">
             <GitHubIcon />
             <span className="visually-hidden">Wraithgrid on GitHub</span>

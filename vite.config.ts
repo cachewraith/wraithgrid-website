@@ -41,7 +41,7 @@ function verificationTags(): string {
 
 /**
  * Fills %SITE_URL% and the verification tags in index.html. The dev server drops the CSP tag,
- * because Vite's HMR preamble is an inline script; builds (and `pnpm preview`) keep it.
+ * because Vite's HMR preamble is an inline script; builds (and `bun run preview`) keep it.
  * robots.txt, sitemap.xml, llms.txt and the JSON-LD are written by scripts/prerender.mjs.
  */
 function siteMeta(): Plugin {

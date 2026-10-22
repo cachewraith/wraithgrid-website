@@ -1,0 +1,149 @@
+/* The app's built-in themes as cards (components/ThemeCards.tsx). One class per theme holds
+   its colors: the CSP allows no inline styles. Kept equal to src/lib/app-themes.ts by a test. */
+.tc-wraith {
+  --tc-frame: #121212;
+  --tc-sidebar: #171717;
+  --tc-bg: #1c1c1c;
+  --tc-raised: #2a2a2a;
+  --tc-text: #ececec;
+  --tc-faint: #8f8f8f;
+  --tc-accent: #7c5cff;
+}
+.tc-midnight {
+  --tc-frame: #080b12;
+  --tc-sidebar: #0b0f19;
+  --tc-bg: #0f1420;
+  --tc-raised: #1b2333;
+  --tc-text: #e2e8f5;
+  --tc-faint: #7c879c;
+  --tc-accent: #22d3ee;
+}
+.tc-clay {
+  --tc-frame: #12100e;
+  --tc-sidebar: #191613;
+  --tc-bg: #1f1b18;
+  --tc-raised: #2e2823;
+  --tc-text: #f0e9e1;
+  --tc-faint: #968a7d;
+  --tc-accent: #d97757;
+}
+.tc-daylight {
+  --tc-frame: #e8e8e7;
+  --tc-sidebar: #f9f9f8;
+  --tc-bg: #ffffff;
+  --tc-raised: #efefed;
+  --tc-text: #1f1f1f;
+  --tc-faint: #6b6b6b;
+  --tc-accent: #7c5cff;
+}
+.tc-paper {
+  --tc-frame: #e8e1d2;
+  --tc-sidebar: #f3eee3;
+  --tc-bg: #fbf8f1;
+  --tc-raised: #ece5d6;
+  --tc-text: #2b2620;
+  --tc-faint: #7a7063;
+  --tc-accent: #2f5fb3;
+}
+
+.themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.theme-card {
+  padding: 8px 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg2);
+}
+
+.tc-win {
+  display: flex;
+  gap: 5px;
+  height: 108px;
+  padding: 6px;
+  border-radius: 8px;
+  background: var(--tc-frame);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tc-faint) 25%, transparent);
+}
+
+.tc-side,
+.tc-main {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 8px;
+  border-radius: 6px;
+}
+
+.tc-side {
+  width: 32%;
+  background: var(--tc-sidebar);
+}
+
+.tc-main {
+  position: relative;
+  flex: 1;
+  background: var(--tc-bg);
+}
+
+.tc-ln {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--tc-faint);
+  opacity: 0.55;
+}
+
+.tc-ln.tc-on {
+  background: var(--tc-text);
+  opacity: 0.9;
+}
+
+.tc-ln.tc-short {
+  width: 60%;
+}
+
+.tc-bub {
+  align-self: flex-end;
+  width: 46%;
+  height: 13px;
+  border-radius: 7px;
+  background: var(--tc-raised);
+}
+
+.tc-btn {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--tc-accent);
+}
+
+.tc-name {
+  margin: 12px 6px 0;
+  font-weight: 600;
+}
+
+.tc-name span {
+  margin-left: 4px;
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.tc-tag {
+  margin: 2px 6px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.themes-more {
+  margin-top: 20px;
+}

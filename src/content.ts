@@ -5,7 +5,17 @@ export const SHOT_WIDTH = 1920
 export const SHOT_HEIGHT = 1080
 
 export type ShotName =
-  'grid-dark' | 'grid-light' | 'diff' | 'palette' | 'new-pane' | 'accounts' | 'mods' | 'settings'
+  | 'grid-dark'
+  | 'grid-light'
+  | 'chat'
+  | 'slash'
+  | 'usage'
+  | 'diff'
+  | 'palette'
+  | 'new-pane'
+  | 'accounts'
+  | 'mods'
+  | 'settings'
 
 export interface Shot {
   name: ShotName
@@ -14,43 +24,58 @@ export interface Shot {
 }
 
 export const HERO_ALT =
-  'Wraithgrid with four panes in a 2×2 grid: three claude panes and one Gemini CLI pane, each with its own account, project folder and git branch. One is running, one needs approval, two are idle. The sidebar lists the panes of the main workspace and the accounts, two of them in a Work folder.'
+  'Wraithgrid with four panes in a 2×2 grid: two claude chats (one adding rate limiting to a login route, with tool cards and a code block; one that wrote tests), a Gemini CLI terminal and a claude terminal waiting for approval. Each has its own account, folder and git branch. The sidebar lists the projects and shows Usage at 42%.'
 
 export const GALLERY: readonly Shot[] = [
   {
-    name: 'mods',
-    title: 'Mods',
-    alt: 'The Mods screen: the mods the claude accounts have installed as one list, each with Add to all accounts, Update, Uninstall and an on/off switch, and below them a searchable catalog of the marketplace with install counts and an Install button per mod.',
+    name: 'chat',
+    title: 'Chat',
+    alt: 'One claude chat zoomed: the request, tool cards for reading a file, installing a package, editing and running the tests, and the answer with a code block. Under the message box: the model (Opus 5.5), effort and mode buttons.',
+  },
+  {
+    name: 'slash',
+    title: '/ commands',
+    alt: 'Typing /te in a chat lists matching commands: /terminal, the superpowers test-driven-development skill, a frontend-design skill and /security-review, each with what it does.',
+  },
+  {
+    name: 'usage',
+    title: 'Usage',
+    alt: 'The Usage screen: per account, the current session and weekly limits as bars with the percentage and reset time (one account at 91%, almost out), then cost over the last 7 days, a column chart of cost per day, and tables by project and by chat.',
+  },
+  {
+    name: 'settings',
+    title: 'Themes',
+    alt: 'Settings → Appearance: the five built-in themes (Wraith, Midnight, Clay, Daylight, Paper) as live previews, Import theme, following the OS light or dark setting, interface size and accent.',
   },
   {
     name: 'diff',
     title: 'Changes',
-    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server pane: package.json and src/routes/auth.ts with added and removed lines, one untracked test file, and below them a commit message box with Commit all, Push and Pull request buttons.',
+    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server chat: package.json and src/routes/auth.ts with added and removed lines, one untracked test file, and a commit message box with Commit all, Push and Pull request buttons.',
   },
   {
-    name: 'palette',
-    title: 'Search',
-    alt: 'The search palette (Ctrl+Shift+P) listing every pane of the work account across workspaces, with its folder, branch and status.',
-  },
-  {
-    name: 'new-pane',
-    title: 'New pane',
-    alt: 'The New pane dialog: a list of accounts showing which CLI each runs (claude, gemini, agy), the working directory with recent folders, launch args, and switches for a git worktree or a plain shell.',
+    name: 'mods',
+    title: 'Mods',
+    alt: 'The Mods screen: the mods the claude accounts have installed as one list, each with Update, Uninstall and an on/off switch, and below them a searchable catalog of the marketplace with install counts and an Install button per mod.',
   },
   {
     name: 'accounts',
     title: 'Accounts',
-    alt: 'The Accounts list: five accounts running claude, gemini or agy, each with its config folder, login state and open panes. One claude account still needs to sign in and shows a Login button.',
+    alt: 'The Accounts page: five accounts running claude, gemini or agy, grouped into a Work folder, each with its config folder, login state and open panes. One claude account still needs to sign in and shows a Login button.',
   },
   {
-    name: 'settings',
-    title: 'Settings',
-    alt: 'Settings → Appearance: theme, five accent colours, terminal palettes (Dracula, Nord, Tokyo Night, Gruvbox, Solarized) and the terminal font with a live preview.',
+    name: 'palette',
+    title: 'Search',
+    alt: 'The search palette (Ctrl+Shift+P) listing every pane of the work account across projects, with its folder, branch and status.',
+  },
+  {
+    name: 'new-pane',
+    title: 'New chat',
+    alt: 'The New chat dialog: the account, the folder with recent folders, chat or terminal, and switches for a git worktree or a plain shell.',
   },
   {
     name: 'grid-light',
     title: 'Light theme',
-    alt: 'The same four-pane grid in the light theme.',
+    alt: 'The same four-pane grid in the Daylight theme.',
   },
 ]
 
@@ -61,6 +86,26 @@ export interface Feature {
 
 export const FEATURES: readonly Feature[] = [
   {
+    title: 'Chat or terminal',
+    body: 'A claude pane can be a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
+  },
+  {
+    title: 'Model, effort and mode',
+    body: 'Pick the model and effort under the message box. Mode sets how much the agent may do on its own: ask before edits, accept edits, plan, auto or don’t ask. Shift+Tab steps through them, like in Claude Code.',
+  },
+  {
+    title: 'Skills with /',
+    body: 'Type / in a chat to list that account’s skills and commands, with what each does. Pick one with the arrow keys and Enter.',
+  },
+  {
+    title: 'Usage and limits',
+    body: 'The Usage screen shows each account’s current session and weekly limits as claude reports them, with when they reset, and what your chats cost per day, project and chat.',
+  },
+  {
+    title: 'Themes, yours too',
+    body: 'Five built-in themes (Wraith, Midnight, Clay, Daylight, Paper), or import your own: a theme is a small JSON file of colors you can share. Ctrl+= and Ctrl+- make the whole app bigger or smaller.',
+  },
+  {
     title: 'Seven agent CLIs',
     body: 'Each account picks the CLI its panes run: Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent or Copilot CLI. Mix them in one grid. Wraithgrid finds them on your PATH, or you set the path.',
   },
@@ -69,44 +114,40 @@ export const FEATURES: readonly Feature[] = [
     body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Codex, Cursor and Copilot may keep the sign-in in your keyring; agy and opencode share one.',
   },
   {
+    title: 'Agents keep running',
+    body: 'Close the window and pick Keep running: terminal agents carry on in the background, a tray icon shows how many, and the next launch shows every pane exactly as it is.',
+  },
+  {
+    title: 'Drive panes from a script',
+    body: 'Turn on Settings → Command line, then wraithgrid list, send, wait, read, new and split work from any terminal, or from an agent in another pane. wraithgrid attach watches one pane.',
+  },
+  {
+    title: 'Run on another computer',
+    body: 'Add a machine from your ~/.ssh/config and a project runs its panes there over ssh, with the remote’s own CLIs and logins.',
+  },
+  {
     title: 'Claude mods',
     body: 'Panes draw what claude mods draw: side panes, a band above the prompt, status lines, toasts. The Mods screen searches the marketplaces, installs, updates and uninstalls for every account, and manages marketplaces.',
   },
   {
     title: 'Git and worktrees',
-    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push and open a pull request from the same panel. Open a pane on a fresh branch in its own git worktree, and remove it when its last pane closes.',
+    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push and open a pull request from the same panel. Open a pane on a fresh branch in its own git worktree, and switch branches from its header.',
   },
   {
-    title: 'Paste screenshots',
-    body: 'Copy an image and press Ctrl+V in a pane. It is saved to a temp file and pasted as a path the CLI can read. Works on Wayland too.',
+    title: 'Projects and layouts',
+    body: 'Each project has a screen with its open chats and History, so a closed chat carries on where it stopped. One pane, two, 2×2 or three columns; drag to resize or swap. The layout adapts down to a 640 px window.',
   },
   {
     title: 'Know which pane needs you',
-    body: 'Each pane shows running, needs approval, done or idle. A desktop notification tells you when a pane you aren’t looking at finishes or asks.',
+    body: 'Each pane shows working, needs you, done or idle, and the sidebar shows it per project. A desktop notification tells you when a pane you aren’t looking at finishes or asks.',
   },
   {
-    title: 'Search everything',
-    body: 'Ctrl+Shift+P finds any pane in any workspace, switches workspace, opens an account in a new pane or runs an app command. Rebind the app shortcuts in Settings.',
-  },
-  {
-    title: 'Workspaces and layouts',
-    body: 'One pane, two, 2×2 or three columns. Drag to resize or swap. Group accounts into sidebar folders and give anything an icon from Material Symbols, Lucide or emoji.',
-  },
-  {
-    title: 'One claude setup',
-    body: 'Every claude account can share the CLAUDE.md, settings, skills, plugins, agents and commands from your ~/.claude, or keep its own.',
-  },
-  {
-    title: 'Your shell, your theme',
-    body: 'Plain shell panes run bash, zsh, fish, nushell, PowerShell, Git Bash, WSL or anything you name. Dark or light, five accents, six terminal palettes.',
-  },
-  {
-    title: 'Pick up where you left off',
-    body: 'When Wraithgrid restarts, each pane you prompted continues its last conversation (claude --continue, codex resume --last). Updates install from Settings with Update & restart.',
+    title: 'Search and paste',
+    body: 'Ctrl+Shift+P finds any pane in any project or runs an app command. Copy a screenshot and press Ctrl+V in a pane: it is saved and pasted as a path the CLI can read, on Wayland too.',
   },
   {
     title: 'Nothing leaves your machine',
-    body: 'No telemetry. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one.',
+    body: 'No telemetry. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one. Usage numbers come from what the CLI already reports.',
   },
 ]
 
@@ -149,7 +190,10 @@ export const SHORTCUTS: readonly { action: string; keys: readonly string[] }[] =
   { action: 'Switch workspace', keys: ['Ctrl', 'Shift', '1…9'] },
   { action: 'Paste a screenshot', keys: ['Ctrl', 'V'] },
   { action: 'New line in claude', keys: ['Shift', 'Enter'] },
-  { action: 'Terminal text bigger / smaller', keys: ['Ctrl', '= / -'] },
+  { action: 'Skills and commands in a chat', keys: ['/'] },
+  { action: 'Next chat mode (ask, edits, plan, auto)', keys: ['Shift', 'Tab'] },
+  { action: 'Zoom the whole app in / out', keys: ['Ctrl', '= / -'] },
+  { action: 'Reset the zoom', keys: ['Ctrl', '0'] },
   { action: 'All shortcuts', keys: ['Ctrl', 'Shift', '/'] },
 ]
 
@@ -176,8 +220,24 @@ export const FAQS: readonly Faq[] = [
     a: 'Yes, since v1.7. Mods run inside each claude pane, and the Mods screen lists what every account has installed, lets you search, install, update and uninstall for every account, manages marketplaces, and loads a mod folder you are building into every pane. Wraithgrid asks the account’s own claude for all of it. Pictures a mod draws show as their text description.',
   },
   {
+    q: 'Can I chat with claude instead of using its terminal?',
+    a: 'Yes, since v1.11. New claude panes open as a chat: streamed answers, tool cards, inline approvals, a model, effort and mode picker, and / for skills. It runs the official claude CLI headless with your account, folder, CLAUDE.md, skills and mods. Any pane switches back to the terminal from its header. Other CLIs open as terminals for now.',
+  },
+  {
+    q: 'Can I see how close I am to my Claude limits?',
+    a: 'Yes, since v1.11. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, as claude itself reports them after each chat turn, plus what chats cost per day, project and chat. Costs are at API prices; on Pro or Max you pay your plan. Terminal panes are not measured.',
+  },
+  {
+    q: 'Can I make my own theme?',
+    a: 'Yes, since v1.11. A theme is a JSON file with a name, dark or light, and at least three colors (background, text, accent); the rest is mixed from those. Import it in Settings → Appearance, or export a built-in one as a starting point. Only hex colors are accepted, so a shared theme can’t carry CSS or script.',
+  },
+  {
+    q: 'Do my agents keep running when I close Wraithgrid?',
+    a: 'Terminal panes can, since v1.10: close the window and pick Keep running, and a tray icon shows how many are still working. Chat panes stop on quit, and carry on the same conversation when Wraithgrid opens again.',
+  },
+  {
     q: 'Do my conversations survive a restart?',
-    a: 'Yes, since v1.9. A pane you sent a prompt to starts with its CLI’s continue option when Wraithgrid opens again, so the conversation goes on. Turn it off per pane by right-clicking its header. Running agents still stop when Wraithgrid quits.',
+    a: 'Yes. A chat pane resumes its conversation by its id. A terminal pane you sent a prompt to starts with its CLI’s continue option. Closed chats stay in their project’s History, and opening one from there carries on where it stopped.',
   },
   {
     q: 'Can I change the keyboard shortcuts?',
