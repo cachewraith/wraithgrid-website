@@ -108,5 +108,10 @@ export const THEME_EXAMPLE = `{
   },
   "terminal": {
     "red": "#ff6b81"
+  },
+  "style": {
+    "radius": "large",
+    "depth": "deep",
+    "density": "spacious"
   }
 }`

@@ -8,8 +8,8 @@ export function Themes() {
       <div className="container">
         <h2 id="themes-title">Five themes, or make your own</h2>
         <p className="section-lede">
-          Pick one in Settings → Appearance, follow your OS between a dark and a light one, or
-          import a theme someone shared: a small JSON file of colors.
+          Pick one in Settings → Appearance, follow your OS between a dark and a light one, edit any
+          of them live with Customize…, or install a theme someone shared from Browse community….
         </p>
         <ThemeCards />
         <p className="themes-more">
