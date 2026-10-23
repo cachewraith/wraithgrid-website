@@ -1,5 +1,5 @@
 /**
- * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.14);
+ * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.15);
  * don't add any the app doesn't have. Inline text: `code`, **bold**, [label](/path), ⟦key⟧.
  */
 import type { DocPage } from '../lib/docs'
@@ -43,7 +43,7 @@ export const DOCS: readonly DocPage[] = [
             steps: [
               'Click the account button at the bottom of the sidebar, then **New account**.',
               'Pick a name and the **CLI** it runs. To keep a login you already have, use **Import ~/.claude** instead: nothing is copied.',
-              'Press **Login**. For claude a dialog runs its own sign-in: open the sign-in page, paste the code if it shows one. Other CLIs sign in from a terminal the first time a pane starts.',
+              'Press **Login**. For claude and codex a dialog runs the CLI’s own sign-in: for claude, open the sign-in page and paste the code if it shows one; for codex, enter the one-time code on the page. Other CLIs sign in from a terminal the first time a pane starts.',
             ],
           },
           {
@@ -63,7 +63,7 @@ export const DOCS: readonly DocPage[] = [
             ],
           },
           {
-            p: 'New claude panes open as a chat; other CLIs open as terminals. Click a project in the sidebar for its screen: open chats, and the History of closed ones, with search.',
+            p: 'New claude, codex and agy panes open as a chat; other CLIs open as terminals. Click a project in the sidebar for its screen: open chats, and the History of closed ones, with search.',
           },
         ],
       },
@@ -74,7 +74,7 @@ export const DOCS: readonly DocPage[] = [
           {
             list: [
               '[The chat view](/docs/chat): model, effort, modes, approvals and / commands.',
-              '[Themes](/docs/themes): the five built-in themes, and how to make your own.',
+              '[Themes](/docs/themes): the five built-in themes, the editor, community themes, and how to make your own.',
               '[Usage](/docs/usage): your plan limits and what chats cost.',
               '[Accounts and mods](/docs/accounts): separate logins, a shared claude setup, mods.',
               '[Terminals, scripts and machines](/docs/terminal): keep agents running, the `wraithgrid` command, ssh.',
@@ -90,14 +90,14 @@ export const DOCS: readonly DocPage[] = [
     nav: 'The chat view',
     title: 'The chat view',
     description:
-      'Chat with Claude Code in Wraithgrid: streamed answers, tool cards and approvals, model, effort and permission modes (plan, accept edits, auto), / commands for skills, and history.',
+      'Chat with Claude Code, Codex or Antigravity in Wraithgrid: streamed answers, tool cards and approvals, model, effort and permission modes (plan, accept edits, auto), / commands for skills, and history.',
     sections: [
       {
         id: 'how',
         title: 'How it works',
         blocks: [
           {
-            p: 'A chat pane runs the official `claude` CLI headless, with the pane’s account, folder, CLAUDE.md, skills and mods. Answers stream in as formatted text with code blocks you can copy. Commands, file edits (as a diff), searches and task lists show as small cards that open to show their output.',
+            p: 'A chat pane runs the official CLI headless (`claude`, `codex` or `agy`), with the pane’s account and folder; for claude also its CLAUDE.md, skills and mods. Your messages sit in an accent-tinted bubble. Answers stream in as formatted text with code blocks you can copy. Commands, file edits (as a diff), searches and task lists show as a quiet timeline of steps that open to show their output.',
           },
           {
             list: [
@@ -109,7 +109,10 @@ export const DOCS: readonly DocPage[] = [
             ],
           },
           {
-            note: 'Chat is for Claude Code for now; other CLIs open as terminals. Chat agents stop when Wraithgrid quits and carry on the same conversation when it opens again.',
+            p: 'When the agent leaves a command or another agent running after its turn, the chat shows **Running in background** with each task and how long it has run, and the pane and sidebar say **in background** until it ends. Closing the chat asks first.',
+          },
+          {
+            note: 'Chat is for Claude Code, Codex and Antigravity; other CLIs open as terminals. Chat agents stop when Wraithgrid quits and carry on the same conversation when it opens again.',
           },
         ],
       },
@@ -118,7 +121,10 @@ export const DOCS: readonly DocPage[] = [
         title: 'Approvals',
         blocks: [
           {
-            p: 'When claude wants to run something that needs your OK, a card appears above the message box with what it will run: **Allow**, **Always allow** (saves the rule the CLI suggests) or **Deny**. The pane header and the sidebar show **needs you** until you answer.',
+            p: 'When the agent wants to run something that needs your OK, a bar appears above the message box with what it will run: **Allow**, **Always allow** (saves the rule the CLI suggests) or **Deny**. The pane header and the sidebar show **needs you** until you answer.',
+          },
+          {
+            note: 'agy can’t ask before a tool in a chat, so it skips what it would need to ask about and says what it skipped and how to allow it. Stop and a new model or mode restart it, and it carries on.',
           },
         ],
       },
@@ -168,7 +174,7 @@ export const DOCS: readonly DocPage[] = [
             },
           },
           {
-            p: 'When the mode is not the normal one, the pane header says so. **Settings → Chat** sets the model, effort and mode for new chats.',
+            p: 'The modes above are claude’s; codex and agy chats list their own. When the mode is not the normal one, the pane header says so. **Settings → Chat** sets the model, effort and mode for new chats.',
           },
         ],
       },
@@ -211,7 +217,7 @@ export const DOCS: readonly DocPage[] = [
     nav: 'Themes',
     title: 'Themes',
     description:
-      'Wraithgrid’s five built-in themes (Wraith, Midnight, Clay, Daylight, Paper), following the OS light or dark setting, interface zoom, and how to make, import and share your own theme file.',
+      'Wraithgrid’s five built-in themes (Wraith, Midnight, Clay, Daylight, Paper), following the OS light or dark setting, interface zoom, the theme editor, community themes, and how to make and share your own theme file.',
     sections: [
       {
         id: 'built-in',
@@ -219,7 +225,38 @@ export const DOCS: readonly DocPage[] = [
         blocks: [
           { themes: true },
           {
-            p: 'Pick one in **Settings → Appearance**: each card is a live preview in that theme’s colors. Terminals follow the theme too when **Terminal colors** is **Match app**.',
+            p: 'Pick one in **Settings → Appearance**: each card is a live preview in that theme’s colors. They differ in shape too: Midnight is compact and flat, Clay round and deep with a soft glow on the frame, Paper flat with firmer borders. Terminals follow the theme too when **Terminal colors** is **Match app**.',
+          },
+        ],
+      },
+      {
+        id: 'editor',
+        title: 'Customize a theme',
+        blocks: [
+          {
+            p: '**Settings → Appearance → Customize…** edits a copy of any theme with the whole app as the live preview: colors by role (picker or hex), fonts, chat text size, corners, borders, depth, frame glow, density and motion.',
+          },
+          {
+            list: [
+              'Text that gets hard to read against its background is flagged, with a one-click fix to a nearby color that passes.',
+              '**Undo** and **Reset** step back; **Cancel** puts the theme you had back.',
+              '**Save as new theme** keeps it in your list; **Export…** writes the file to share.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'community',
+        title: 'Community themes',
+        blocks: [
+          {
+            p: '**Settings → Appearance → Browse community…** lists themes others published on GitHub, with a screenshot of each: search, sort, filter dark or light, then **Install**, **Use**, **Update** or **Remove**. **Install from GitHub** takes any theme repository by its address.',
+          },
+          {
+            p: 'To share yours, start a repository from the [theme template](https://github.com/cachewraith/wraithgrid-theme-template) (`wraithgrid-theme.json`, `manifest.json`, `screenshot.png`), then open a pull request adding it to [wraithgrid-themes](https://github.com/cachewraith/wraithgrid-themes). Raising `version` in the manifest offers **Update** to people who installed it.',
+          },
+          {
+            note: 'Wraithgrid fetches only from `raw.githubusercontent.com`, checks the manifest and the theme like an imported file, and refuses a theme that needs a newer app. What came from where is kept in `~/.wraithgrid/themes/community.lock`.',
           },
         ],
       },
@@ -246,14 +283,14 @@ export const DOCS: readonly DocPage[] = [
         title: 'Make your own',
         blocks: [
           {
-            p: 'A theme is one JSON file of colors. Only `name`, `mode` (`dark` or `light`), `colors.bg`, `colors.text` and `colors.accent` are required; the colors you leave out are mixed from those three, so a three-color theme still looks finished.',
+            p: 'A theme is one JSON file: colors, plus an optional `style` for fonts, shape, depth, density and motion. Only `name`, `mode` (`dark` or `light`), `colors.bg`, `colors.text` and `colors.accent` are required; the colors you leave out are mixed from those three, so a three-color theme still looks finished.',
           },
           { code: THEME_EXAMPLE, label: 'ocean.json' },
           {
             p: 'Import it from **Settings → Appearance → Import theme…**: Wraithgrid checks it and saves a copy in `~/.wraithgrid/themes`. To start from a built-in theme, right-click its card → **Export as a starting point…**. To share yours, send the file.',
           },
           {
-            note: 'Every value must be a hex color: `#rgb`, `#rrggbb` or `#rrggbbaa`. Nothing else is accepted (no CSS, no `rgb()`), so a theme you are sent can’t carry CSS or script. A file with a mistake is listed in Appearance with the reason instead of being applied.',
+            note: 'Every color must be a hex color: `#rgb`, `#rrggbb` or `#rrggbbaa`, and every `style` value one of the options below. Nothing else is accepted (no CSS, no `rgb()`, no font files), so a theme you are sent can’t carry CSS or script. A file with a mistake is listed in Appearance with the reason instead of being applied.',
           },
         ],
       },
@@ -282,11 +319,65 @@ export const DOCS: readonly DocPage[] = [
                 ['`ok`, `warn`, `err`, `info`', 'Status colors: working, needs you, errors, info'],
                 ['`selection`, `hover`', 'Selected and hovered rows'],
                 ['`frame`', 'The window around the sidebar and main panels'],
+                [
+                  '`userBubble`',
+                  'Your messages in a chat (default: the accent mixed into `raised`)',
+                ],
+                ['`codeBlock`', 'Code blocks in chat answers'],
+                [
+                  '`diffAdd`, `diffDel`',
+                  'Added and removed lines in diffs (use an alpha, e.g. `#4ade801f`)',
+                ],
               ],
             },
           },
           {
             p: 'An optional `terminal` object sets `background`, `foreground`, `cursor`, `selection` and the 16 ANSI colors (`black` … `white`, `brightBlack` … `brightWhite`). The file name in `~/.wraithgrid/themes` is its id: lowercase letters, digits and `-`; files can be up to 64 KB.',
+          },
+        ],
+      },
+      {
+        id: 'style',
+        title: 'Style options',
+        blocks: [
+          {
+            table: {
+              head: ['Key', 'Options', 'Default'],
+              rows: [
+                [
+                  '`font`',
+                  '`Geist`, `System`, `Inter`, `IBM Plex Sans`, `Source Sans 3`, `Noto Sans`',
+                  '`Geist`',
+                ],
+                [
+                  '`monoFont`',
+                  '`JetBrains Mono`, `System`, `IBM Plex Mono`, `Fira Code`, `Cascadia Code`',
+                  '`JetBrains Mono`',
+                ],
+                ['`chatTextSize`', 'Whole number 13–17 (px)', '14.5'],
+                [
+                  '`radius`',
+                  '`small`, `medium`, `large` (scales every rounded corner)',
+                  '`medium`',
+                ],
+                ['`border`', '`thin` (1px), `thick` (1.5px) on the main cards', '`thin`'],
+                ['`depth`', '`flat`, `soft`, `deep` shadows on cards, menus and dialogs', '`soft`'],
+                ['`density`', '`compact`, `comfortable`, `spacious`', '`comfortable`'],
+                [
+                  '`motion`',
+                  '`on`, `reduced` (no animations), `off` (no animations or transitions)',
+                  '`on`',
+                ],
+                [
+                  '`frameGradient`',
+                  '`true` for a faint accent glow over the window frame',
+                  '`false`',
+                ],
+              ],
+            },
+          },
+          {
+            p: 'Geist and JetBrains Mono come with Wraithgrid; the other fonts are used when installed, else Geist and JetBrains Mono. Your system’s reduce-motion setting always wins over `motion`. Files without `style` look as they always did.',
           },
         ],
       },

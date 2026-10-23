@@ -87,7 +87,7 @@ export interface Feature {
 export const FEATURES: readonly Feature[] = [
   {
     title: 'Chat or terminal',
-    body: 'A claude pane can be a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals, attached files. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
+    body: 'Claude Code, Codex and Antigravity panes open as a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals, attached files. Work the agent leaves running shows as Running in background. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
   },
   {
     title: 'Model, effort and mode',
@@ -107,7 +107,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Themes, yours too',
-    body: 'Five built-in themes (Wraith, Midnight, Clay, Daylight, Paper), or import your own: a theme is a small JSON file of colors you can share. Ctrl+= and Ctrl+- make the whole app bigger or smaller.',
+    body: 'Five built-in themes (Wraith, Midnight, Clay, Daylight, Paper) that differ in shape and depth too. Customize… edits any of them live over the whole app, and Browse community… installs themes others share on GitHub. Ctrl+= and Ctrl+- make the whole app bigger or smaller.',
   },
   {
     title: 'Seven agent CLIs',
@@ -224,12 +224,12 @@ export const FAQS: readonly Faq[] = [
     a: 'Yes, since v1.7. Mods run inside each claude pane, and the Mods screen lists what every account has installed, lets you search, install, update and uninstall for every account, manages marketplaces, and loads a mod folder you are building into every pane. Wraithgrid asks the account’s own claude for all of it. Pictures a mod draws show as their text description.',
   },
   {
-    q: 'Can I chat with claude instead of using its terminal?',
-    a: 'Yes, since v1.11. New claude panes open as a chat: streamed answers, tool cards, inline approvals, a model, effort and mode picker, and / for skills. It runs the official claude CLI headless with your account, folder, CLAUDE.md, skills and mods. Any pane switches back to the terminal from its header. Other CLIs open as terminals for now.',
+    q: 'Can I chat with an agent instead of using its terminal?',
+    a: 'Yes. Claude panes open as a chat since v1.11, Codex and Antigravity (agy) since v1.15: streamed answers, tool cards, inline approvals and a model, effort and mode picker. It runs the official CLI headless with your account and folder. agy can’t ask before a tool in a chat, so it says what it skipped and how to allow it. Any pane switches back to the terminal from its header. Gemini CLI, opencode, Cursor and Copilot open as terminals.',
   },
   {
     q: 'Do I need a terminal to sign in?',
-    a: 'Not for claude, since v1.12: Login on an account opens a dialog that runs claude’s own sign-in in that account’s folder. Open the sign-in page, paste the code if it shows one, done. Other CLIs still sign in from a terminal the first time a pane starts.',
+    a: 'Not for claude (since v1.12) or codex (since v1.15): Login on an account opens a dialog that runs the CLI’s own sign-in in that account’s folder. For claude, open the sign-in page and paste the code if it shows one; for codex, enter the one-time code on the page. Other CLIs still sign in from a terminal the first time a pane starts.',
   },
   {
     q: 'Can I carry on a chat on another account when I hit a limit?',
@@ -241,7 +241,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Can I make my own theme?',
-    a: 'Yes, since v1.11. A theme is a JSON file with a name, dark or light, and at least three colors (background, text, accent); the rest is mixed from those. Import it in Settings → Appearance, or export a built-in one as a starting point. Only hex colors are accepted, so a shared theme can’t carry CSS or script.',
+    a: 'Yes. Since v1.15, Settings → Appearance → Customize… edits any theme live over the whole app (colors, fonts, corners, depth, density, motion), flags hard-to-read text with a one-click fix, and saves it as a new theme. A theme is a JSON file with a name, dark or light, and at least three colors; only hex colors and fixed style options are accepted, so a shared theme can’t carry CSS or script. Share yours on the community gallery from the theme template.',
   },
   {
     q: 'Do my agents keep running when I close Wraithgrid?',
