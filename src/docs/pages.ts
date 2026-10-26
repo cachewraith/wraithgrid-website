@@ -1,5 +1,5 @@
 /**
- * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.15);
+ * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.23);
  * don't add any the app doesn't have. Inline text: `code`, **bold**, [label](/path), ⟦key⟧.
  */
 import type { DocPage } from '../lib/docs'
@@ -75,6 +75,7 @@ export const DOCS: readonly DocPage[] = [
             list: [
               '[The chat view](/docs/chat): model, effort, modes, approvals and / commands.',
               '[Themes](/docs/themes): the five built-in themes, the editor, community themes, and how to make your own.',
+              '[Scheduled chats, teams and preview](/docs/scheduled): chats on a schedule, Send later, a team per project, the web preview.',
               '[Usage](/docs/usage): your plan limits and what chats cost.',
               '[Accounts and mods](/docs/accounts): separate logins, a shared claude setup, mods.',
               '[Terminals, scripts and machines](/docs/terminal): keep agents running, the `wraithgrid` command, ssh.',
@@ -102,11 +103,15 @@ export const DOCS: readonly DocPage[] = [
           {
             list: [
               'Paste a screenshot with ⟦Ctrl⟧ ⟦V⟧, or attach files with the paperclip or by dropping them (up to 20): images go as images, other files as paths claude reads.',
-              'Close to a limit? The account chip under the message box → **Continue as…** carries the chat on under another claude account.',
+              'At a limit, a Claude or Codex chat carries on as your next account of the same CLI, with the whole conversation (**Settings → Chat → Switch account at limit**). The account button under the message box → **Continue as…** does it by hand, to another CLI too.',
+              'The clock button next to Send queues the message for when your limit resets, in an hour, tomorrow morning or at a time you pick: **Send later**.',
+              'When Claude asks you something, the chat shows the options to pick, or write your own answer.',
               'Stop a turn with **Stop** or ⟦Esc⟧. A message sent while one runs waits its turn.',
-              'Start over with the new-conversation button in the pane header, or `/new`.',
-              'The Chat / Terminal switch in the header shows the CLI’s own screen, for signing in, `/config` and other interactive commands.',
+              'Start over from the pane’s ⋯ menu, or `/new`.',
             ],
+          },
+          {
+            p: 'While the agent thinks or runs a tool, the chat’s own logo pops and turns next to **Thinking** or **Working**, and its row in the sidebar does the same.',
           },
           {
             p: 'When the agent leaves a command or another agent running after its turn, the chat shows **Running in background** with each task and how long it has run, and the pane and sidebar say **in background** until it ends. Closing the chat asks first.',
@@ -174,7 +179,7 @@ export const DOCS: readonly DocPage[] = [
             },
           },
           {
-            p: 'The modes above are claude’s; codex and agy chats list their own. When the mode is not the normal one, the pane header says so. **Settings → Chat** sets the model, effort and mode for new chats.',
+            p: 'The modes above are claude’s; codex and agy chats list their own. **Settings → Chat** sets the model, effort and mode for new chats.',
           },
         ],
       },
@@ -183,7 +188,7 @@ export const DOCS: readonly DocPage[] = [
         title: '/ commands and skills',
         blocks: [
           {
-            p: 'Type `/` at the start of a message to list what this chat can run: Wraithgrid’s own commands first, then the account’s skills and commands (with the plugin they come from), claude’s built-in commands, and the ones that only work in its terminal. Keep typing to narrow the list; ⟦↑⟧ ⟦↓⟧ move, ⟦Enter⟧ or ⟦Tab⟧ picks, ⟦Esc⟧ closes.',
+            p: 'Type `/` at the start of a message to list what this chat can run: Wraithgrid’s own commands first, then the account’s skills and commands (with the plugin they come from) and claude’s built-in commands. In a Codex chat, `$` suggests its skills too. Keep typing to narrow the list; ⟦↑⟧ ⟦↓⟧ move, ⟦Enter⟧ or ⟦Tab⟧ picks, ⟦Esc⟧ closes.',
           },
           {
             table: {
@@ -192,12 +197,11 @@ export const DOCS: readonly DocPage[] = [
                 ['`/new`', 'Starts a new conversation in this chat (also `/clear`).'],
                 ['`/model`, `/effort`, `/mode`', 'Open those menus.'],
                 ['`/usage`', 'Opens the Usage screen.'],
-                ['`/terminal`', 'Shows the CLI’s own terminal screen.'],
               ],
             },
           },
           {
-            p: 'Picking a skill puts `/name ` in the box so you can add what it should work on. A terminal-only command switches the pane to its terminal and types the command there, waiting for your ⟦Enter⟧.',
+            p: 'Picking a skill puts `/name ` in the box so you can add what it should work on.',
           },
         ],
       },
@@ -384,6 +388,73 @@ export const DOCS: readonly DocPage[] = [
     ],
   },
   {
+    slug: 'scheduled',
+    nav: 'Scheduled, teams, preview',
+    title: 'Scheduled chats, teams and preview',
+    description:
+      'Start Wraithgrid chats on a schedule or when a limit resets, queue a message with Send later, save a team of agents per project, and preview the site an agent builds.',
+    sections: [
+      {
+        id: 'scheduled',
+        title: 'Scheduled chats',
+        blocks: [
+          {
+            p: '**Scheduled** in the sidebar lists your jobs as cards: the project and account, the prompt, the schedule, the next run and the last result. **New job** picks the project, the account, the prompt and when it runs:',
+          },
+          {
+            list: [
+              'Once, daily, on chosen days, every few hours, or when the account’s 5-hour or weekly limit resets.',
+              'In a new chat, or carrying on an existing one; with its own model, effort and mode.',
+              'At the limit: wait for the reset, or let **Switch account at limit** carry it to your next account.',
+            ],
+          },
+          {
+            p: 'A run starts in the project’s folder. Runs missed by over an hour are recorded as missed, not run late; a run that finds the previous one still going is skipped. A finished run sends a notification. The switch on a card turns it off; ⋯ has Run now, Edit, Duplicate, Open last chat and Delete.',
+          },
+          {
+            note: 'Jobs run while Wraithgrid is open. With jobs on, closing the window keeps the tray icon, so they still run.',
+          },
+        ],
+      },
+      {
+        id: 'later',
+        title: 'Send later',
+        blocks: [
+          {
+            p: 'The clock button next to Send queues what you typed for when your limit resets, in an hour, tomorrow at 09:00 or at a time you pick. It shows above the message box, and on the Scheduled page, with **Cancel** and **Send now**.',
+          },
+        ],
+      },
+      {
+        id: 'team',
+        title: 'A team per project',
+        blocks: [
+          {
+            p: 'On a project’s screen, **Team** saves agents for that project: any providers, each with a role, an account, a model, effort and mode, an optional first message, and its own branch folder or the project folder. The editor shows each account’s use, and when two agents share one limit.',
+          },
+          {
+            p: '**Start team** opens them all as chats, laid out side by side, and sends each its first message. **Stop team** closes them to History.',
+          },
+        ],
+      },
+      {
+        id: 'preview',
+        title: 'Web preview',
+        blocks: [
+          {
+            p: '**Preview** in a project’s menu (or the command palette) runs the project’s dev server and shows the site in a pane beside the chat. The command is found in `package.json` or Laravel’s `artisan` and saved on the project. Back, forward, reload, the address, open in browser and the server log are in its toolbar.',
+          },
+          {
+            p: '**Attach to chat** puts a screenshot of the page, its console errors and failed requests into the project’s chat, ready to send, so the agent can see what it built.',
+          },
+          {
+            note: 'Only addresses on your own computer load, in the preview’s own session; other links open in your browser.',
+          },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'usage',
     nav: 'Usage',
     title: 'Usage and limits',
@@ -395,7 +466,7 @@ export const DOCS: readonly DocPage[] = [
         title: 'Where to find it',
         blocks: [
           {
-            p: '**Usage** in the sidebar (with the current session % next to it), in the account menu, the gauge in the top bar, or `/usage` in a chat.',
+            p: 'The sidebar shows the account new chats use with its **5h** and **week** meters, reset times and where it switches next (amber from 80%, red from 95%); click it for **Usage**. Also the gauge in the top bar, or `/usage` in a chat.',
           },
         ],
       },
@@ -467,7 +538,10 @@ export const DOCS: readonly DocPage[] = [
         title: 'One claude setup',
         blocks: [
           {
-            p: 'By default every claude account uses the `CLAUDE.md`, `settings.json`, `skills/`, `plugins/`, `agents/` and `commands/` of your normal `~/.claude`, so your instructions and plugins work everywhere. Logins and history stay separate. **Settings → Agents & CLIs → Shared CLAUDE.md and skills → Each account its own** turns it off.',
+            p: '**Settings → Agents & CLIs → Shared instructions and skills → Overall** gives each provider one brain: all claude accounts share one `CLAUDE.md`, settings, skills, plugins, agents and commands, and all codex accounts one `AGENTS.md`, skills and prompts. They live in `~/.wraithgrid/shared`, filled once from your `~/.claude` and `~/.codex`, which are left as they are. Logins and history always stay separate. **Each account its own** turns it off.',
+          },
+          {
+            p: 'A project with only a `CLAUDE.md` is read by Codex too; an `AGENTS.md` still wins.',
           },
           {
             note: 'A running claude reads these files when it starts: restart its panes after a change.',
