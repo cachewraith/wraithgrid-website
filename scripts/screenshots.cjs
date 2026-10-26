@@ -153,7 +153,7 @@ function setup(home, userData) {
           panes: [
             pane('p1', 'a-work', 'api-server', { title: 'Rate limit /login' }),
             pane('p2', 'a-personal', 'web-app'),
-            pane('p3', 'a-acme', 'infra'),
+            pane('p3', 'a-acme', 'infra', { title: 'Bump the staging node pool' }),
             pane('p4', 'a-work', 'mobile', { title: 'Offline sync tests' }),
           ],
         },
@@ -166,6 +166,35 @@ function setup(home, userData) {
           panes: [],
         },
       ],
+      schedules: [
+        job(
+          'j1',
+          'ws-main',
+          'a-work',
+          'Review open PRs and list which ones need me, newest first',
+          {
+            when: { kind: 'weekly', days: [1, 2, 3, 4, 5], time: '09:00' },
+            chatMode: 'plan',
+            runs: [{ at: Date.now() - 50 * 3_600_000, result: 'done', paneId: null, note: '' }],
+          },
+        ),
+        job('j2', 'ws-main', 'a-work', 'Update dependencies and run the tests', {
+          when: { kind: 'hours', every: 6, from: '00:00' },
+          runs: [{ at: Date.now() - 6 * 3_600_000, result: 'done', paneId: null, note: '' }],
+        }),
+        job('j3', 'ws-main', 'a-acme', 'Carry on the staging rollout from where it stopped', {
+          when: { kind: 'reset', window: 'fiveHour' },
+          nextAt: null,
+          runs: [{ at: Date.now() - 3_600_000, result: 'waiting', paneId: null, note: 'at limit' }],
+        }),
+        job('j4', 'ws-side', 'a-work', 'Draft the weekly release notes', {
+          when: { kind: 'weekly', days: [5], time: '17:00' },
+          enabled: false,
+          runs: [
+            { at: Date.now() - 70 * 3_600_000, result: 'missed', paneId: null, note: '3h late' },
+          ],
+        }),
+      ],
       activeWorkspace: 'ws-main',
       recentFolders: ['~/code/api-server', '~/code/web-app', '~/code/infra'],
       settings: {
@@ -173,11 +202,32 @@ function setup(home, userData) {
         notifyPanes: false,
         theme: 'dark',
         defaultAccountId: 'a-work',
+        chatOnlyMigrated: true,
       },
     }),
   )
   stageChats(userData)
   stageUsage(userData)
+}
+
+/** A scheduled job (app 1.21+) as config.schedules keeps it. */
+function job(id, wsId, accountId, prompt, extra) {
+  return {
+    id,
+    wsId,
+    accountId,
+    prompt,
+    model: null,
+    effort: null,
+    chatMode: null,
+    target: { kind: 'new' },
+    atLimit: 'wait',
+    enabled: true,
+    oneShot: false,
+    nextAt: Date.now() + 14 * 3_600_000,
+    runs: [],
+    ...extra,
+  }
 }
 
 const tool = (id, name, toolKind, subtitle, output, preview = null) => ({
@@ -241,6 +291,33 @@ function stageChats(userData) {
       text: "Done. `/login` now allows **five attempts per minute** per IP; the sixth gets a `429`:\n\n```ts\nconst loginLimiter = rateLimit({ windowMs: 60_000, max: 5 })\nrouter.post('/login', loginLimiter, login)\n```\n\nThe 23 auth tests pass. I left a `test.todo` for the 429 case in `test/auth.limit.test.ts`.",
     },
     { kind: 'turn', id: 'r1', costUsd: 0.42, durationMs: 48000, error: null },
+  ])
+  save('p3', [
+    { kind: 'user', id: 'u1', text: 'Bump the staging cluster to the new node pool', images: 0 },
+    tool('t1', 'Read', 'read', 'terraform/staging/main.tf', 'Read 211 lines'),
+    tool('t2', 'Edit', 'edit', 'terraform/staging/main.tf', 'Updated', {
+      type: 'diff',
+      path: 'terraform/staging/main.tf',
+      before: 'node_pool = "n1"\nmachine_type = "e2-standard-4"\n',
+      after: 'node_pool = "n2"\nmachine_type = "e2-standard-8"\n',
+    }),
+    tool(
+      't3',
+      'Bash',
+      'shell',
+      'terraform plan -out=staging.plan',
+      'Plan: 1 to add, 0 to change, 1 to destroy',
+      {
+        type: 'code',
+        text: 'terraform plan -out=staging.plan',
+      },
+    ),
+    {
+      kind: 'assistant',
+      id: 'a1',
+      text: 'The plan swaps the **n1** pool for **n2** (`e2-standard-8`): one pool added, one destroyed. Apply it with `terraform apply staging.plan` when the old nodes are drained.',
+    },
+    { kind: 'turn', id: 'r1', costUsd: 0.21, durationMs: 26000, error: null },
   ])
   save('p4', [
     { kind: 'user', id: 'u1', text: 'Write tests for the offline sync queue', images: 0 },
@@ -332,7 +409,8 @@ function fakeBin(tmp) {
   const userData = path.join(tmp, 'userdata')
   setup(home, userData)
   const app = await electron.launch({
-    args: [path.join(APP, 'out/main/index.js')],
+    // The app folder (its package.json main), so the app reports its own version.
+    args: [APP],
     env: {
       ...process.env,
       HOME: home,
@@ -354,7 +432,8 @@ function fakeBin(tmp) {
     await pause(5000)
     await shot('grid-dark')
 
-    await pane(0).locator('.gitc').click()
+    await pane(0).locator('.ph-title').click()
+    await win.keyboard.press('Control+Shift+D')
     await pause(1200)
     await shot('diff')
     await win.keyboard.press('Control+Shift+D')
@@ -368,8 +447,7 @@ function fakeBin(tmp) {
 
     await win.keyboard.press('Control+Shift+N')
     await pause(500)
-    await win.locator('#np-dir').fill('~/code/api-server')
-    await pause(500)
+    await pause(300)
     await shot('new-pane')
     await win.keyboard.press('Escape')
     await pause(300)
@@ -381,7 +459,7 @@ function fakeBin(tmp) {
     await shot('chat')
     const box = pane(0).getByLabel('Message', { exact: true })
     await box.fill('/')
-    await box.pressSequentially('te')
+    await box.pressSequentially('re')
     await pause(500)
     await shot('slash')
     await box.fill('')
@@ -391,6 +469,14 @@ function fakeBin(tmp) {
     await win.locator('.u-pill').click()
     await pause(900)
     await shot('usage')
+
+    await win
+      .getByRole('complementary', { name: 'Sidebar' })
+      .getByRole('button', { name: 'Scheduled' })
+      .click()
+    await win.getByRole('list', { name: 'Scheduled jobs' }).waitFor()
+    await pause(800)
+    await shot('scheduled')
 
     await win.getByRole('button', { name: /Switch account/ }).click()
     await win.getByRole('menuitem', { name: 'Manage accounts' }).click()

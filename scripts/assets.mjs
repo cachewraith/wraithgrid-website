@@ -24,6 +24,7 @@ const shots = [
   'accounts',
   'mods',
   'settings',
+  'scheduled',
 ]
 const files = [
   ['build/icon.svg', 'icon.svg'],

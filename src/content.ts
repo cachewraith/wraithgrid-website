@@ -16,6 +16,7 @@ export type ShotName =
   | 'accounts'
   | 'mods'
   | 'settings'
+  | 'scheduled'
 
 export interface Shot {
   name: ShotName
@@ -24,33 +25,38 @@ export interface Shot {
 }
 
 export const HERO_ALT =
-  'Wraithgrid with four panes in a 2×2 grid: two claude chats (one adding rate limiting to a login route, with tool cards and a code block; one that wrote tests), a Gemini CLI terminal and a claude terminal waiting for approval. Each has its own account, folder and git branch. The sidebar lists the projects and shows Usage at 42%.'
+  'Wraithgrid with four panes in a 2×2 grid: three claude chats (adding rate limiting to a login route, with tool cards and a code block; bumping a staging node pool with terraform; writing tests) and a Gemini CLI terminal. Each has its own account, folder and git branch. The sidebar shows the work account at 42% of its 5-hour limit and 58% of its week, and the main project’s chats as a tree.'
 
 export const GALLERY: readonly Shot[] = [
   {
     name: 'chat',
     title: 'Chat',
-    alt: 'One claude chat zoomed: the request, tool cards for reading a file, installing a package, editing and running the tests, and the answer with a code block. Under the message box: the model (Opus 5.5), effort and mode buttons.',
+    alt: 'One claude chat zoomed: the request, steps for reading a file, installing a package, editing and running the tests, and the answer with a code block. Under the message box: the account (work), the model (Opus 5.5), effort and mode buttons, attach and Send later.',
   },
   {
     name: 'slash',
     title: '/ commands',
-    alt: 'Typing /te in a chat lists matching commands: /terminal, the superpowers test-driven-development skill, a frontend-design skill and /security-review, each with what it does.',
+    alt: 'Typing /re in a chat lists matching commands: the code-review and skill-creator skills, /security-review, frontend-design and the superpowers test-driven-development skill, each with what it does.',
   },
   {
     name: 'usage',
     title: 'Usage',
-    alt: 'The Usage screen: per account, the current session and weekly limits as bars with the percentage and reset time (one account at 91%, almost out), then cost over the last 7 days, a column chart of cost per day, and tables by project and by chat.',
+    alt: 'The Usage screen: per account, the current session and weekly limits as bars with the percentage and reset time (one account at 91%, almost out), how many panes each has open, and what Gemini and Antigravity accounts can’t report.',
   },
   {
     name: 'settings',
     title: 'Themes',
-    alt: 'Settings → Appearance: the five built-in themes (Wraith, Midnight, Clay, Daylight, Paper) as live previews, Import theme, following the OS light or dark setting, interface size and accent.',
+    alt: 'Settings → Appearance: Browse community, Customize and Import theme, the five built-in themes (Wraith, Midnight, Clay, Daylight, Paper) as live previews, following the OS light or dark setting, interface size, accent and terminal colors.',
   },
   {
     name: 'diff',
     title: 'Changes',
-    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server chat: package.json and src/routes/auth.ts with added and removed lines, one untracked test file, and a commit message box with Commit all, Push and Pull request buttons.',
+    alt: 'The Changes panel open next to the grid, showing the git diff of the api-server chat: package.json and src/routes/auth.ts with added and removed lines, one untracked test file, and a commit message box with Commit all, Pull, Push and Pull request buttons.',
+  },
+  {
+    name: 'scheduled',
+    title: 'Scheduled',
+    alt: 'The Scheduled page: four jobs as cards, each with its project and account, the prompt, the schedule (weekdays 09:00, every 6 hours, when a limit resets, Fridays), the next run and the last result: done, waiting at a limit, or missed while one job is switched off.',
   },
   {
     name: 'mods',
@@ -70,7 +76,7 @@ export const GALLERY: readonly Shot[] = [
   {
     name: 'new-pane',
     title: 'New chat',
-    alt: 'The New chat dialog: the account, the folder with recent folders, chat or terminal, and switches for a git worktree or a plain shell.',
+    alt: 'The New chat dialog: the account to use (claude, gemini and agy accounts with their plans), the project’s folder with its git branch and recent folders, More options, and Start chat.',
   },
   {
     name: 'grid-light',
@@ -86,8 +92,8 @@ export interface Feature {
 
 export const FEATURES: readonly Feature[] = [
   {
-    title: 'Chat or terminal',
-    body: 'Claude Code, Codex and Antigravity panes open as a chat, like Claude or ChatGPT desktop: streamed answers, tool cards with diffs, inline approvals, attached files. Work the agent leaves running shows as Running in background. The official CLI still does the work underneath. Flip any pane back to its terminal from the header.',
+    title: 'A chat for every agent',
+    body: 'Claude Code, Codex and Antigravity open as a chat, like Claude or ChatGPT desktop: answers that blur in word by word, steps with diffs, inline approvals, Claude’s questions as options to pick, attached files. While it thinks, the chat’s own logo pops and turns. The official CLI still does the work underneath; other CLIs open as terminals.',
   },
   {
     title: 'Model, effort and mode',
@@ -98,12 +104,24 @@ export const FEATURES: readonly Feature[] = [
     body: 'Type / in a chat to list that account’s skills and commands, with what each does. Pick one with the arrow keys and Enter.',
   },
   {
-    title: 'Continue as another account',
-    body: 'Close to a limit? The account chip under the message box carries the chat on under another claude account, in place, with a divider marking the switch.',
+    title: 'Never stuck at a limit',
+    body: 'When a Claude or Codex chat’s account reaches its limit, the chat carries on as your next account of the same CLI, with the whole conversation. Or pick one yourself under the message box, even another CLI: you see the handoff before anything changes.',
   },
   {
     title: 'Usage and limits',
-    body: 'The Usage screen shows each account’s current session and weekly limits as claude reports them, with when they reset, and what your chats cost per day, project and chat.',
+    body: 'The sidebar shows the account new chats use, with its 5-hour and weekly meters and where it switches next. The Usage screen shows every account’s limits, when they reset, and what your chats cost per day, project and chat.',
+  },
+  {
+    title: 'Scheduled chats',
+    body: 'Start chats on a schedule: once, daily, on chosen days, every few hours, or the moment an account’s limit resets. The Scheduled page shows each job as a card with its next and last run. Send later queues a message for when your limit resets.',
+  },
+  {
+    title: 'A team per project',
+    body: 'Save a team of agents on a project, any providers, each with a role, a model, a first message and its own branch folder, and start them all with one click, laid out side by side.',
+  },
+  {
+    title: 'See what it built',
+    body: 'Preview runs the project’s dev server and shows the site in a pane beside the chat. Attach to chat sends a screenshot of the page, its console errors and failed requests, so the agent sees them.',
   },
   {
     title: 'Themes, yours too',
@@ -115,7 +133,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Logins stay separate',
-    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Codex, Cursor and Copilot may keep the sign-in in your keyring; agy and opencode share one.',
+    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Instructions and skills can still be one per provider: one CLAUDE.md for every claude account, one AGENTS.md for every codex account.',
   },
   {
     title: 'Agents keep running',
@@ -225,7 +243,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Can I chat with an agent instead of using its terminal?',
-    a: 'Yes. Claude panes open as a chat since v1.11, Codex and Antigravity (agy) since v1.15: streamed answers, tool cards, inline approvals and a model, effort and mode picker. It runs the official CLI headless with your account and folder. agy can’t ask before a tool in a chat, so it says what it skipped and how to allow it. Any pane switches back to the terminal from its header. Gemini CLI, opencode, Cursor and Copilot open as terminals.',
+    a: 'Yes. Claude Code, Codex and Antigravity (agy) always open as a chat: streamed answers, steps, inline approvals and a model, effort and mode picker. It runs the official CLI headless with your account and folder. agy can’t ask before a tool in a chat, so it says what it skipped and how to allow it. Gemini CLI, opencode, Cursor and Copilot open as terminals, as do plain shells and panes on another machine.',
   },
   {
     q: 'Do I need a terminal to sign in?',
@@ -233,11 +251,15 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Can I carry on a chat on another account when I hit a limit?',
-    a: 'Yes, since v1.13. The account chip under the message box → Continue as… copies that conversation into the other claude account and carries on there, in place. The original stays, and Usage counts each turn to the account that ran it.',
+    a: 'Yes. Since v1.18 a Claude or Codex chat moves to your next account of the same CLI on its own when its account reaches 95% of a limit (Settings → Chat sets 80/90/95/100%, or off), and a message the limit refused is sent again there. The account button under the message box → Continue as… does it by hand, and since v1.19 can hand the chat to another CLI too.',
   },
   {
     q: 'Can I see how close I am to my Claude limits?',
     a: 'Yes, since v1.11. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, as claude itself reports them after each chat turn, plus what chats cost per day, project and chat. Costs are at API prices; on Pro or Max you pay your plan. Terminal panes are not measured.',
+  },
+  {
+    q: 'Can agents work while I’m away?',
+    a: 'Yes, since v1.21. The Scheduled page starts chats once, daily, on chosen days, every few hours, or when an account’s limit resets, and Send later queues one message in a chat. Runs missed by over an hour are recorded, not run late. With jobs on, closing the window keeps the tray icon so they still run.',
   },
   {
     q: 'Can I make my own theme?',
@@ -261,7 +283,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Does it update itself?',
-    a: 'On Windows and Linux, yes: Update & restart in Settings downloads the new version, installs it over the current one and relaunches. The .deb, .rpm and pacman packages ask for your password. On macOS it opens the release page. Settings → About keeps the release notes of each version. Versions 1.2.0 and older must be updated by hand once.',
+    a: 'On Windows and Linux, yes: Settings → About downloads the new version, checks it and restarts into it, showing each step. The .deb, .rpm and pacman packages ask for your password. On macOS it opens the release page. About also lists every version’s release notes. Versions 1.2.0 and older must be updated by hand once.',
   },
   {
     q: 'Is it free?',

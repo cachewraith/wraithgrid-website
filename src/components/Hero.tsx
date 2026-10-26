@@ -47,9 +47,8 @@ export function Hero({ os, release, downloads }: Props) {
             <ExternalLink href={RELEASES_URL}>Latest release</ExternalLink>
           )}
           <span>
-            New in 1.15: Codex and Antigravity chats, a new chat look, a theme editor and community
-            themes. Since 1.13: a New project screen, git History and Pull, continue a chat as
-            another account.
+            New in 1.23: Scheduled as cards, working logos and a bigger About. Since 1.21: scheduled
+            chats, project teams, a web preview, and chats that switch account at a limit.
           </span>
         </p>
         <h1 id="hero-title" data-intro="2">
