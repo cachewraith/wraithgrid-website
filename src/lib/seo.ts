@@ -18,7 +18,7 @@ import { REPO_URL, RELEASES_URL } from './release'
 
 export const SITE_NAME = 'Wraithgrid'
 export const SUMMARY =
-  'Wraithgrid is a free, open-source desktop app for running many Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent and Copilot CLI sessions side by side, each with its own account, project folder and git branch. It runs on Windows, macOS and Linux.'
+  'Wraithgrid is a free desktop app for running many Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent and Copilot CLI sessions side by side, each with its own account, project folder and git branch. It runs on Windows, macOS and Linux.'
 const AUTHOR = { name: 'cachewraith', url: 'https://github.com/cachewraith' }
 
 /** Crawlers of AI search and assistant products, welcomed by name in robots.txt. */
@@ -78,23 +78,11 @@ export function buildJsonLd(site: string, version: string | null): object {
       })),
     ],
     image: shot(site, 'grid-dark'),
-    license: 'https://opensource.org/licenses/MIT',
     isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     author: { '@id': author['@id'] },
     publisher: { '@id': author['@id'] },
     sameAs: [REPO_URL],
-  }
-  const code = {
-    '@type': 'SoftwareSourceCode',
-    '@id': `${REPO_URL}#code`,
-    name: SITE_NAME,
-    codeRepository: REPO_URL,
-    programmingLanguage: 'TypeScript',
-    runtimePlatform: 'Electron',
-    license: 'https://opensource.org/licenses/MIT',
-    targetProduct: { '@id': app['@id'] },
-    author: { '@id': author['@id'] },
   }
   const faq = {
     '@type': 'FAQPage',
@@ -115,7 +103,7 @@ export function buildJsonLd(site: string, version: string | null): object {
     publisher: { '@id': author['@id'] },
     about: { '@id': app['@id'] },
   }
-  return { '@context': 'https://schema.org', '@graph': [website, app, code, faq, author] }
+  return { '@context': 'https://schema.org', '@graph': [website, app, faq, author] }
 }
 
 /** `<script type="application/ld+json">`, with `<` escaped so text can't close the tag. */
@@ -181,7 +169,7 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     version
       ? `Latest release: v${version} (${REPO_URL}/releases/tag/v${version}).`
       : `Latest release: ${RELEASES_URL}.`,
-    'License: MIT. Independent project, not affiliated with Anthropic or Google.',
+    'Free. Independent project, not affiliated with Anthropic or Google.',
     '',
     '## How it works',
     '',
@@ -226,7 +214,7 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     '## Links',
     '',
     `- [Website](${site})`,
-    `- [Source code and README](${REPO_URL})`,
+    `- [Downloads and README](${REPO_URL})`,
     `- [Releases and changelog](${REPO_URL}/releases)`,
     `- [Report an issue](${REPO_URL}/issues)`,
     '',

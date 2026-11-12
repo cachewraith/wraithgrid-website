@@ -227,7 +227,7 @@ export interface Faq {
 export const FAQS: readonly Faq[] = [
   {
     q: 'Is Wraithgrid official?',
-    a: 'No. It is an independent open-source project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
+    a: 'No. It is an independent project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
   },
   {
     q: 'Does it see my login or my code?',
@@ -287,7 +287,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Is it free?',
-    a: 'Yes. Wraithgrid is free and open source under the MIT license.',
+    a: 'Yes. Wraithgrid is free to download and use.',
   },
 ]
 

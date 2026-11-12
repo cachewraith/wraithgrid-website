@@ -61,13 +61,13 @@ export function Hero({ os, release, downloads }: Props) {
         </p>
         <div className="cta" data-intro="4">
           <PrimaryDownload os={os} release={release} />
-          <ExternalLink className="btn btn-secondary" href={REPO_URL}>
-            Source on GitHub
+          <ExternalLink className="btn btn-secondary" href={`${REPO_URL}/releases`}>
+            All releases
           </ExternalLink>
         </div>
         <p className="hero-foot" data-intro="4">
           <span>Windows, macOS and Linux</span>
-          <span>Free, MIT licensed</span>
+          <span>Free</span>
           {downloads !== null && (
             <span title="Installer downloads across every release, from GitHub">
               {formatDownloads(downloads)}
