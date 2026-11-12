@@ -20,9 +20,6 @@ export function Footer() {
           <li>
             <ExternalLink href={RELEASES_URL}>Releases</ExternalLink>
           </li>
-          <li>
-            <ExternalLink href={`${REPO_URL}/blob/main/LICENSE`}>MIT License</ExternalLink>
-          </li>
         </ul>
         <div className="footer-notes">
           <p>
