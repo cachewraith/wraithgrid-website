@@ -1,62 +1,86 @@
 /* Design tokens, taken from the Wraithgrid app (src/renderer/styles/tokens.css): neutral greys,
-   quiet borders, a monochrome primary button, and the violet accent kept for links and focus.
-   Dark is the default; public/theme-init.js sets data-theme="light" before first paint when the
-   visitor (or their OS) prefers it. */
+   quiet borders, a monochrome primary button, and the violet accent kept for links, labels and
+   focus. Dark is the default; public/theme-init.js sets data-theme="light" before first paint
+   when the visitor (or their OS) prefers it. */
 :root {
   color-scheme: dark;
 
-  --bg: #171717;
-  --bg2: #1c1c1c;
-  --panel: #1c1c1c;
-  --raise: #2a2a2a;
-  --line: #2b2b2b;
-  --line-strong: #3a3a3a;
-  --text: #ececec;
-  --muted: #b4b4b4;
-  --faint: #8f8f8f;
+  --bg: #121212;
+  --bg2: #171717;
+  --panel: #1a1a1a;
+  --raise: #262626;
+  --line: #262626;
+  --line-strong: #363636;
+  --text: #ededed;
+  --muted: #a8a8a8;
+  --faint: #8a8a8a;
+  --accent: #7c5cff;
   --accent-text: #a996ff;
-  --solid: #ececec;
+  --accent-soft: rgb(124 92 255 / 14%);
+  --solid: #ededed;
   --solid-hover: #ffffff;
-  --on-solid: #171717;
+  --on-solid: #121212;
   --ok: #4ade80;
   --warn: #fbbf24;
-  --terminal: #1c1c1c;
+  --terminal: #161616;
   --focus: #a996ff;
+  --nav-bg: rgb(18 18 18 / 72%);
+  --grid-line: rgb(255 255 255 / 4.5%);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-lg: 0 24px 64px -16px rgb(0 0 0 / 60%), 0 0 0 1px rgb(255 255 255 / 3%);
+  --highlight: inset 0 1px 0 rgb(255 255 255 / 5%);
 
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --fast: 160ms;
+  --slow: 600ms;
+
   --radius-sm: 6px;
-  --radius: 8px;
+  --radius: 10px;
+  --radius-lg: 16px;
   --container: 1200px;
-  --gutter: 16px;
-  --nav-h: 56px;
+  --gutter: 20px;
+  --nav-h: 60px;
+  --section-y: 80px;
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
 
   --bg: #ffffff;
-  --bg2: #f9f9f8;
+  --bg2: #fafaf9;
   --panel: #ffffff;
-  --raise: #efefed;
-  --line: #e7e7e4;
-  --line-strong: #d4d4d0;
-  --text: #1f1f1f;
+  --raise: #f0f0ee;
+  --line: #e8e8e5;
+  --line-strong: #d6d6d2;
+  --text: #171717;
   --muted: #4a4a4a;
   --faint: #6b6b6b;
+  --accent: #6a4cf0;
   --accent-text: #5a3de0;
-  --solid: #1f1f1f;
+  --accent-soft: rgb(106 76 240 / 9%);
+  --solid: #171717;
   --solid-hover: #000000;
   --on-solid: #ffffff;
   --ok: #15803d;
   --warn: #a16207;
   --terminal: #ffffff;
   --focus: #5a3de0;
+  --nav-bg: rgb(255 255 255 / 76%);
+  --grid-line: rgb(0 0 0 / 5%);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 6%);
+  --shadow-lg: 0 24px 64px -20px rgb(0 0 0 / 18%), 0 0 0 1px rgb(0 0 0 / 3%);
+  --highlight: inset 0 1px 0 rgb(255 255 255 / 70%);
 }
 
 @media (min-width: 720px) {
   :root {
     --gutter: 32px;
+    --section-y: 120px;
   }
 }

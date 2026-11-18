@@ -9,7 +9,12 @@
  * therefore never renders a download button without a working link, or a made-up count.
  */
 
+/** The releases repo: installers, release notes and the update feed. Every download and
+ * version link goes here, so visitors only ever see published, current releases. */
 export const REPO_URL = 'https://github.com/cachewraith/wraithgrid'
+/** The app's source code (MIT). Linked as "Source code" only; never for downloads, because its
+ * tags include old development versions. */
+export const SOURCE_URL = 'https://github.com/cachewraith/wraithgrid-app'
 export const RELEASES_URL = `${REPO_URL}/releases/latest`
 /** Newest first. Releases past the 100 most recent are not counted. */
 export const API_URL = 'https://api.github.com/repos/cachewraith/wraithgrid/releases?per_page=100'

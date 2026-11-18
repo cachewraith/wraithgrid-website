@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { Faq } from './components/Faq'
 import { Features } from './components/Features'
+import { FinalCta } from './components/FinalCta'
 import { Footer } from './components/Footer'
 import { Gallery } from './components/Gallery'
 import { Hero } from './components/Hero'
@@ -8,6 +9,7 @@ import { HowItWorks } from './components/HowItWorks'
 import { Install } from './components/Install'
 import { Nav } from './components/Nav'
 import { Shortcuts } from './components/Shortcuts'
+import { Spotlights } from './components/Spotlights'
 import { Themes } from './components/Themes'
 import { DocsPage } from './components/docs/DocsPage'
 import { DOCS } from './docs/pages'
@@ -56,6 +58,7 @@ export function App({ path }: Props) {
       <main id="main" tabIndex={-1}>
         <Hero os={os} release={release} downloads={info?.totalDownloads ?? null} />
         <HowItWorks />
+        <Spotlights />
         <Features />
         <Themes />
         <Gallery />
@@ -63,6 +66,7 @@ export function App({ path }: Props) {
         <Install key={os} os={os} release={release} />
         <Shortcuts />
         <Faq />
+        <FinalCta os={os} release={release} />
       </main>
       <Footer />
     </>

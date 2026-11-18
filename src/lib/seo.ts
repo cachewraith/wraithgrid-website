@@ -14,7 +14,7 @@ import {
 } from '../content'
 import { DOCS } from '../docs/pages'
 import { docsPath, type DocPage } from './docs'
-import { REPO_URL, RELEASES_URL } from './release'
+import { REPO_URL, RELEASES_URL, SOURCE_URL } from './release'
 
 export const SITE_NAME = 'Wraithgrid'
 export const SUMMARY =
@@ -82,7 +82,7 @@ export function buildJsonLd(site: string, version: string | null): object {
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     author: { '@id': author['@id'] },
     publisher: { '@id': author['@id'] },
-    sameAs: [REPO_URL],
+    sameAs: [REPO_URL, SOURCE_URL],
   }
   const faq = {
     '@type': 'FAQPage',
@@ -169,7 +169,7 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     version
       ? `Latest release: v${version} (${REPO_URL}/releases/tag/v${version}).`
       : `Latest release: ${RELEASES_URL}.`,
-    'Free. Independent project, not affiliated with Anthropic or Google.',
+    'Free and open source (MIT). Independent project, not affiliated with Anthropic or Google.',
     '',
     '## How it works',
     '',
@@ -215,6 +215,7 @@ export function buildLlmsTxt(site: string, version: string | null): string {
     '',
     `- [Website](${site})`,
     `- [Downloads and README](${REPO_URL})`,
+    `- [Source code (MIT)](${SOURCE_URL})`,
     `- [Releases and changelog](${REPO_URL}/releases)`,
     `- [Report an issue](${REPO_URL}/issues)`,
     '',
