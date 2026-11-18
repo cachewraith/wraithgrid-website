@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Send feedback · Wraithgrid</title>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <!-- Sets data-theme before first paint, same as the main site. -->
+    <script src="/theme-init.js"></script>
+    <style>
+      /* Tokens copied from src/styles/tokens.css so this page stands alone. */
+      :root {
+        color-scheme: dark;
+        --bg: #171717;
+        --panel: #1c1c1c;
+        --raise: #2a2a2a;
+        --line: #2b2b2b;
+        --line-strong: #3a3a3a;
+        --text: #ececec;
+        --muted: #b4b4b4;
+        --faint: #8f8f8f;
+        --accent-text: #a996ff;
+        --solid: #ececec;
+        --solid-hover: #ffffff;
+        --on-solid: #171717;
+        --ok: #4ade80;
+        --warn: #fbbf24;
+        --focus: #a996ff;
+        --font-sans:
+          'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+        --radius-sm: 6px;
+        --radius: 8px;
+      }
+      :root[data-theme='light'] {
+        color-scheme: light;
+        --bg: #ffffff;
+        --panel: #ffffff;
+        --raise: #efefed;
+        --line: #e7e7e4;
+        --line-strong: #d4d4d0;
+        --text: #1f1f1f;
+        --muted: #4a4a4a;
+        --faint: #6b6b6b;
+        --accent-text: #5a3de0;
+        --solid: #1f1f1f;
+        --solid-hover: #000000;
+        --on-solid: #ffffff;
+        --ok: #15803d;
+        --warn: #a16207;
+        --focus: #5a3de0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.55 var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent-text);
+      }
+      :focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 48px 16px 64px;
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 24px;
+        color: var(--muted);
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .back:hover {
+        color: var(--text);
+      }
+      h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .lede {
+        margin: 0 0 32px;
+        color: var(--muted);
+      }
+
+      form {
+        display: grid;
+        gap: 22px;
+      }
+      fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      label,
+      legend {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .optional {
+        color: var(--faint);
+        font-weight: 400;
+      }
+      .hint {
+        margin: 6px 0 0;
+        color: var(--faint);
+        font-size: 13px;
+      }
+
+      input[type='text'],
+      input[type='email'],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius-sm);
+        background: var(--panel);
+        color: var(--text);
+        font: inherit;
+      }
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--faint);
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--focus);
+      }
+      .row {
+        display: grid;
+        gap: 16px;
+      }
+      @media (min-width: 560px) {
+        .row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Feedback type: radio buttons styled as segmented chips. */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chips input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .chips label {
+        margin: 0;
+        padding: 7px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        color: var(--muted);
+        font-weight: 400;
+        cursor: pointer;
+        user-select: none;
+      }
+      .chips label:hover {
+        color: var(--text);
+      }
+      .chips input:checked + label {
+        border-color: var(--solid);
+        background: var(--solid);
+        color: var(--on-solid);
+      }
+      .chips input:focus-visible + label {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      /* Screenshot drop zone. Paste works anywhere on the page, not just here. */
+      .drop {
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        padding: 28px 16px;
+        border: 1px dashed var(--line-strong);
+        border-radius: var(--radius);
+        background: var(--panel);
+        color: var(--muted);
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .drop:hover,
+      .drop.over {
+        border-color: var(--focus);
+      }
+      .drop.over {
+        background: var(--raise);
+      }
+      .drop strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+      kbd {
+        padding: 1px 6px;
+        border: 1px solid var(--line-strong);
+        border-radius: 4px;
+        background: var(--raise);
+        font: 12px var(--font-mono);
+      }
+
+      .thumbs {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .thumbs:empty {
+        display: none;
+      }
+      .thumb {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: var(--raise);
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        cursor: zoom-in;
+      }
+      .thumb .size {
+        position: absolute;
+        left: 6px;
+        bottom: 6px;
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: rgb(0 0 0 / 0.65);
+        color: #fff;
+        font: 11px var(--font-mono);
+      }
+      .thumb .remove {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: rgb(0 0 0 / 0.65);
+        color: #fff;
+        font-size: 16px;
+        line-height: 24px;
+        cursor: pointer;
+      }
+      .thumb .remove:hover {
+        background: rgb(0 0 0 / 0.85);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        padding-top: 4px;
+      }
+      button {
+        font: inherit;
+      }
+      .btn {
+        padding: 10px 18px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: var(--text);
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: var(--raise);
+      }
+      .btn-primary {
+        border-color: var(--solid);
+        background: var(--solid);
+        color: var(--on-solid);
+      }
+      .btn-primary:hover {
+        border-color: var(--solid-hover);
+        background: var(--solid-hover);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status {
+        min-height: 1.5em;
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .status.error {
+        color: var(--warn);
+      }
+      .status.ok {
+        color: var(--ok);
+      }
+
+      .done {
+        padding: 32px 24px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        text-align: center;
+      }
+      .done h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .done p {
+        margin: 0 0 20px;
+        color: var(--muted);
+      }
+
+      dialog {
+        max-width: min(92vw, 1200px);
+        max-height: 92vh;
+        padding: 0;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+      dialog::backdrop {
+        background: rgb(0 0 0 / 0.7);
+      }
+      dialog img {
+        display: block;
+        max-width: 100%;
+        max-height: 88vh;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Back to Wraithgrid</a>
+      <h1>Send feedback</h1>
+      <p class="lede">
+        Found a bug, or have an idea for the UI? Tell us what you saw. Screenshots help a lot: paste
+        them straight in with <kbd>Ctrl</kbd>+<kbd>V</kbd>.
+      </p>
+
+      <form id="form" novalidate>
+        <fieldset>
+          <legend>What kind of feedback?</legend>
+          <div class="chips">
+            <input type="radio" name="type" id="t-bug" value="Bug" checked />
+            <label for="t-bug">Bug</label>
+            <input type="radio" name="type" id="t-ui" value="UI / design" />
+            <label for="t-ui">UI / design</label>
+            <input type="radio" name="type" id="t-idea" value="Feature idea" />
+            <label for="t-idea">Feature idea</label>
+            <input type="radio" name="type" id="t-other" value="Other" />
+            <label for="t-other">Other</label>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="title">Summary</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            maxlength="120"
+            placeholder="e.g. Pane header overlaps the tab bar at 125% zoom"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="details">Details</label>
+          <textarea
+            id="details"
+            name="details"
+            maxlength="5000"
+            placeholder="What happened, what you expected, and how to reproduce it."
+            required
+          ></textarea>
+        </div>
+
+        <div>
+          <label id="shots-label">Screenshots <span class="optional">(optional)</span></label>
+          <div
+            class="drop"
+            id="drop"
+            role="button"
+            tabindex="0"
+            aria-labelledby="shots-label"
+            aria-describedby="shots-hint"
+          >
+            <span><strong>Paste</strong>, drop, or <strong>click to choose</strong> images</span>
+            <span class="hint" id="shots-hint"
+              >PNG, JPEG, WebP or GIF · up to 5 images, 5 MB each</span
+            >
+          </div>
+          <input type="file" id="file" accept="image/*" multiple hidden />
+          <ul class="thumbs" id="thumbs" aria-live="polite"></ul>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="version">Wraithgrid version <span class="optional">(optional)</span></label>
+            <input type="text" id="version" name="version" placeholder="e.g. 1.23.0" />
+          </div>
+          <div>
+            <label for="os">Operating system</label>
+            <select id="os" name="os">
+              <option>Windows</option>
+              <option>macOS</option>
+              <option>Linux</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="email">Email <span class="optional">(optional)</span></label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" />
+          <p class="hint">Only if you'd like a reply. We won't use it for anything else.</p>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="submit">Send feedback</button>
+          <p class="status" id="status" role="status"></p>
+        </div>
+      </form>
+
+      <div class="done" id="done" hidden>
+        <h2>Thanks, that's sent</h2>
+        <p>We read every message. If you left an email, we'll get back to you there.</p>
+        <button type="button" class="btn" id="again">Send more feedback</button>
+      </div>
+    </main>
+
+    <dialog id="preview" aria-label="Screenshot preview">
+      <img alt="" />
+    </dialog>
+
+    <script>
+      ;(function () {
+        // No backend yet: sendFeedback() fakes a successful POST and logs what would be sent.
+        // To go live, replace its body with
+        //   return fetch(ENDPOINT, { method: 'POST', body: body }).then(res => { if (!res.ok) throw ... })
+        // against an endpoint that accepts multipart/form-data (fields: type, title, details,
+        // version, os, email, userAgent, page; files: images[]).
+        function sendFeedback(body) {
+          var entries = {}
+          body.forEach(function (value, key) {
+            var shown =
+              value instanceof File ? value.name + ' (' + formatSize(value.size) + ')' : value
+            entries[key] = key in entries ? [].concat(entries[key], shown) : shown
+          })
+          console.info('[feedback mock] would POST:', entries)
+          return new Promise(function (resolve) {
+            setTimeout(resolve, 800)
+          })
+        }
+
+        var MAX_IMAGES = 5
+        var MAX_BYTES = 5 * 1024 * 1024
+
+        var form = document.getElementById('form')
+        var drop = document.getElementById('drop')
+        var fileInput = document.getElementById('file')
+        var thumbs = document.getElementById('thumbs')
+        var status = document.getElementById('status')
+        var submit = document.getElementById('submit')
+        var done = document.getElementById('done')
+        var preview = document.getElementById('preview')
+
+        var images = [] // { file, url }
+
+        // Guess the OS so most people never touch the select.
+        var ua = navigator.userAgent
+        document.getElementById('os').value = /Win/.test(ua)
+          ? 'Windows'
+          : /Mac/.test(ua)
+            ? 'macOS'
+            : /Linux|X11/.test(ua)
+              ? 'Linux'
+              : 'Other'
+
+        function setStatus(text, kind) {
+          status.textContent = text
+          status.className = 'status' + (kind ? ' ' + kind : '')
+        }
+
+        function formatSize(bytes) {
+          return bytes < 1024 * 1024
+            ? Math.round(bytes / 1024) + ' KB'
+            : (bytes / 1024 / 1024).toFixed(1) + ' MB'
+        }
+
+        function addFiles(files) {
+          var skipped = []
+          for (var i = 0; i < files.length; i++) {
+            var file = files[i]
+            if (!file.type.startsWith('image/')) continue
+            if (images.length >= MAX_IMAGES) {
+              skipped.push('only ' + MAX_IMAGES + ' images allowed')
+              break
+            }
+            if (file.size > MAX_BYTES) {
+              skipped.push((file.name || 'pasted image') + ' is over 5 MB')
+              continue
+            }
+            // Pasted screenshots arrive as "image.png"; give them distinct names.
+            if (!file.name || file.name === 'image.png') {
+              var ext = (file.type.split('/')[1] || 'png').replace('jpeg', 'jpg')
+              file = new File([file], 'screenshot-' + (images.length + 1) + '.' + ext, {
+                type: file.type,
+              })
+            }
+            images.push({ file: file, url: URL.createObjectURL(file) })
+          }
+          render()
+          setStatus(
+            skipped.length ? 'Skipped: ' + skipped.join(', ') + '.' : '',
+            skipped.length ? 'error' : '',
+          )
+        }
+
+        function removeImage(index) {
+          URL.revokeObjectURL(images[index].url)
+          images.splice(index, 1)
+          render()
+        }
+
+        function render() {
+          thumbs.innerHTML = ''
+          images.forEach(function (img, i) {
+            var li = document.createElement('li')
+            li.className = 'thumb'
+
+            var el = document.createElement('img')
+            el.src = img.url
+            el.alt = img.file.name
+            el.addEventListener('click', function () {
+              preview.querySelector('img').src = img.url
+              preview.showModal()
+            })
+
+            var size = document.createElement('span')
+            size.className = 'size'
+            size.textContent = formatSize(img.file.size)
+
+            var remove = document.createElement('button')
+            remove.type = 'button'
+            remove.className = 'remove'
+            remove.textContent = '×'
+            remove.setAttribute('aria-label', 'Remove ' + img.file.name)
+            remove.addEventListener('click', function () {
+              removeImage(i)
+            })
+
+            li.append(el, size, remove)
+            thumbs.appendChild(li)
+          })
+        }
+
+        // Paste anywhere on the page. Text pastes into fields still work normally because we
+        // only intercept when the clipboard holds image files.
+        document.addEventListener('paste', function (e) {
+          var files = Array.from((e.clipboardData && e.clipboardData.files) || []).filter(
+            function (f) {
+              return f.type.startsWith('image/')
+            },
+          )
+          if (!files.length) return
+          e.preventDefault()
+          addFiles(files)
+        })
+
+        drop.addEventListener('click', function () {
+          fileInput.click()
+        })
+        drop.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            fileInput.click()
+          }
+        })
+        fileInput.addEventListener('change', function () {
+          addFiles(fileInput.files)
+          fileInput.value = ''
+        })
+        ;['dragenter', 'dragover'].forEach(function (type) {
+          drop.addEventListener(type, function (e) {
+            e.preventDefault()
+            drop.classList.add('over')
+          })
+        })
+        ;['dragleave', 'drop'].forEach(function (type) {
+          drop.addEventListener(type, function (e) {
+            e.preventDefault()
+            drop.classList.remove('over')
+          })
+        })
+        drop.addEventListener('drop', function (e) {
+          addFiles(e.dataTransfer.files)
+        })
+        // Stop a file dropped outside the zone from navigating away from the form.
+        window.addEventListener('dragover', function (e) {
+          e.preventDefault()
+        })
+        window.addEventListener('drop', function (e) {
+          e.preventDefault()
+        })
+
+        preview.addEventListener('click', function () {
+          preview.close()
+        })
+
+        function fields() {
+          var data = new FormData(form)
+          return {
+            type: data.get('type'),
+            title: String(data.get('title') || '').trim(),
+            details: String(data.get('details') || '').trim(),
+            version: String(data.get('version') || '').trim(),
+            os: data.get('os'),
+            email: String(data.get('email') || '').trim(),
+          }
+        }
+
+        function validate(f) {
+          if (!f.title) return ['title', 'Add a short summary.']
+          if (!f.details) return ['details', 'Add some details so we can follow up.']
+          if (f.email && !document.getElementById('email').checkValidity())
+            return ['email', 'That email address doesn’t look right.']
+          return null
+        }
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault()
+          var f = fields()
+          var problem = validate(f)
+          if (problem) {
+            setStatus(problem[1], 'error')
+            document.getElementById(problem[0]).focus()
+            return
+          }
+
+          var body = new FormData()
+          Object.keys(f).forEach(function (k) {
+            body.append(k, f[k])
+          })
+          body.append('userAgent', navigator.userAgent)
+          body.append('page', document.referrer)
+          images.forEach(function (img) {
+            body.append('images[]', img.file, img.file.name)
+          })
+
+          submit.disabled = true
+          setStatus('Sending…')
+          sendFeedback(body)
+            .then(function () {
+              form.hidden = true
+              done.hidden = false
+              setStatus('')
+            })
+            .catch(function () {
+              setStatus('Couldn’t send that. Check your connection and try again.', 'error')
+            })
+            .finally(function () {
+              submit.disabled = false
+            })
+        })
+
+        document.getElementById('again').addEventListener('click', function () {
+          form.reset()
+          images.forEach(function (img) {
+            URL.revokeObjectURL(img.url)
+          })
+          images = []
+          render()
+          done.hidden = true
+          form.hidden = false
+          document.getElementById('title').focus()
+        })
+      })()
+    </script>
+  </body>
+</html>
