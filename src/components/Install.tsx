@@ -11,6 +11,7 @@ import { RELEASES_URL, downloadHref, type Platform, type Release } from '../lib/
 import { CodeBlock } from './CodeBlock'
 import { ExternalLink } from './ExternalLink'
 import { DownloadIcon } from './icons'
+import { SectionHead } from './SectionHead'
 
 /** Linux gets the AppImage tab: it runs on any distro, so no distro has to be guessed. */
 function initialTab(os: OS): Platform {
@@ -115,13 +116,12 @@ export function Install({ os, release }: { os: OS; release: Release | null }) {
   return (
     <section id="install" className="section" aria-labelledby="install-title">
       <div className="container install">
-        <h2 id="install-title">Install</h2>
-        <p className="section-lede">
+        <SectionHead id="install-title" eyebrow="Install" title="Up and running in a minute">
           Builds for Windows 10/11, macOS (Apple silicon and Intel) and x64 Linux: Ubuntu, Debian,
           Kali, Fedora and Arch, on X11 or Wayland, including Hyprland and sway.
-        </p>
+        </SectionHead>
 
-        <div className="tabs">
+        <div className="tabs card" data-reveal="">
           <div className="seg tablist" role="tablist" aria-label="Platform" onKeyDown={onKeyDown}>
             {INSTALL_TABS.map((t) => (
               <button
@@ -159,26 +159,30 @@ export function Install({ os, release }: { os: OS; release: Release | null }) {
           ))}
         </div>
 
-        <div className="verify">
-          <h3>Or in one line</h3>
-          <p>
-            On Linux or macOS, this picks the package for your system, checks it against{' '}
-            <code>SHA256SUMS.txt</code> and installs it:
-          </p>
-          <CodeBlock code={INSTALL_SCRIPT} label="One-line install command" />
-        </div>
+        <div className="install-more">
+          <div className="verify card" data-reveal="">
+            <h3>Or in one line</h3>
+            <p>
+              On Linux or macOS, this picks the package for your system, checks it against{' '}
+              <code>SHA256SUMS.txt</code> and installs it:
+            </p>
+            <CodeBlock code={INSTALL_SCRIPT} label="One-line install command" />
+          </div>
 
-        <div className="verify">
-          <h3>Verify the download</h3>
-          <p>
-            Every release ships a <code>SHA256SUMS.txt</code>.{' '}
-            <ExternalLink href={release?.checksums?.url ?? RELEASES_URL}>Download it</ExternalLink>{' '}
-            into the same folder as the package, then run:
-          </p>
-          <CodeBlock code={VERIFY_COMMAND} label="Checksum verification command" />
-          <p className="install-req">
-            It prints <code>OK</code> next to each file you downloaded.
-          </p>
+          <div className="verify card" data-reveal="">
+            <h3>Verify the download</h3>
+            <p>
+              Every release ships a <code>SHA256SUMS.txt</code>.{' '}
+              <ExternalLink href={release?.checksums?.url ?? RELEASES_URL}>
+                Download it
+              </ExternalLink>{' '}
+              into the same folder as the package, then run:
+            </p>
+            <CodeBlock code={VERIFY_COMMAND} label="Checksum verification command" />
+            <p className="install-req">
+              It prints <code>OK</code> next to each file you downloaded.
+            </p>
+          </div>
         </div>
       </div>
     </section>

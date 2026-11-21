@@ -85,92 +85,245 @@ export const GALLERY: readonly Shot[] = [
   },
 ]
 
+export type FeatureGroupId = 'chat' | 'limits' | 'parallel' | 'ship' | 'private'
+
+export interface FeatureGroup {
+  id: FeatureGroupId
+  title: string
+  blurb: string
+}
+
+/** The Features section shows FEATURES in these groups, in this order. */
+export const FEATURE_GROUPS: readonly FeatureGroup[] = [
+  {
+    id: 'chat',
+    title: 'Chat with any agent',
+    blurb: 'A real chat on top of the official CLIs, or their own terminal.',
+  },
+  {
+    id: 'limits',
+    title: 'Stay ahead of limits',
+    blurb: 'See every account’s limits, and keep working when one runs out.',
+  },
+  {
+    id: 'parallel',
+    title: 'Work in parallel',
+    blurb: 'Many agents, many projects, one window that tells you which needs you.',
+  },
+  {
+    id: 'ship',
+    title: 'Review and ship',
+    blurb: 'Diffs, commits, previews and remote machines next to the chat.',
+  },
+  {
+    id: 'private',
+    title: 'Private and yours',
+    blurb: 'Separate logins, no telemetry, and a look you choose.',
+  },
+]
+
 export interface Feature {
   title: string
   body: string
+  group: FeatureGroupId
 }
 
 export const FEATURES: readonly Feature[] = [
   {
     title: 'A chat for every agent',
     body: 'Claude Code, Codex and Antigravity open as a chat, like Claude or ChatGPT desktop: answers that blur in word by word, steps with diffs, inline approvals, Claude’s questions as options to pick, attached files. While it thinks, the chat’s own logo pops and turns. The official CLI still does the work underneath; other CLIs open as terminals.',
+    group: 'chat',
   },
   {
     title: 'Model, effort and mode',
     body: 'Pick the model and effort under the message box. Mode sets how much the agent may do on its own: ask before edits, accept edits, plan, auto or don’t ask. Shift+Tab steps through them, like in Claude Code.',
+    group: 'chat',
+  },
+  {
+    title: 'Reply to any part',
+    body: 'Select text in a chat message and click Reply: it goes above the message box as a quote, and the sent message shows each quote as its own card with Show in chat. Type @ to pick a project file or folder, and ↑ brings back the prompts you sent.',
+    group: 'chat',
   },
   {
     title: 'Skills with /',
     body: 'Type / in a chat to list that account’s skills and commands, with what each does. Pick one with the arrow keys and Enter.',
+    group: 'chat',
   },
   {
     title: 'Never stuck at a limit',
-    body: 'When a Claude or Codex chat’s account reaches its limit, the chat carries on as your next account of the same CLI, with the whole conversation. Or pick one yourself under the message box, even another CLI: you see the handoff before anything changes.',
+    body: 'When a Claude or Codex chat’s account reaches its limit, it offers your next account of the same CLI, with both accounts’ use and what carries over, then goes on there with the whole conversation. Or let it switch on its own, or pick one yourself under the message box, even another CLI.',
+    group: 'limits',
   },
   {
     title: 'Usage and limits',
-    body: 'The sidebar shows the account new chats use, with its 5-hour and weekly meters and where it switches next. The Usage screen shows every account’s limits, when they reset, and what your chats cost per day, project and chat.',
+    body: 'Each Claude account’s 5-hour and weekly use updates on its own every 2 minutes, including use from claude.ai or another computer (not on macOS yet). The Usage screen shows every account’s limits, when they reset, and what your chats cost per day, project and chat.',
+    group: 'limits',
   },
   {
     title: 'Scheduled chats',
     body: 'Start chats on a schedule: once, daily, on chosen days, every few hours, or the moment an account’s limit resets. The Scheduled page shows each job as a card with its next and last run. Send later queues a message for when your limit resets.',
+    group: 'limits',
   },
   {
     title: 'A team per project',
     body: 'Save a team of agents on a project, any providers, each with a role, a model, a first message and its own branch folder, and start them all with one click, laid out side by side.',
+    group: 'parallel',
   },
   {
     title: 'See what it built',
     body: 'Preview runs the project’s dev server and shows the site in a pane beside the chat. Attach to chat sends a screenshot of the page, its console errors and failed requests, so the agent sees them.',
+    group: 'ship',
   },
   {
     title: 'Themes, yours too',
     body: 'Five built-in themes (Wraith, Midnight, Clay, Daylight, Paper) that differ in shape and depth too. Customize… edits any of them live over the whole app, and Browse community… installs themes others share on GitHub. Ctrl+= and Ctrl+- make the whole app bigger or smaller.',
+    group: 'private',
   },
   {
     title: 'Seven agent CLIs',
     body: 'Each account picks the CLI its panes run: Claude Code, Codex, Gemini CLI, Antigravity, opencode, Cursor Agent or Copilot CLI. Mix them in one grid. Wraithgrid finds them on your PATH, or you set the path.',
+    group: 'chat',
   },
   {
     title: 'Logins stay separate',
-    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Instructions and skills can still be one per provider: one CLAUDE.md for every claude account, one AGENTS.md for every codex account.',
+    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. The Accounts page groups them in folders, and Add account signs in or reuses the login already in ~/.claude or ~/.codex. Instructions and skills can still be one per provider.',
+    group: 'private',
   },
   {
     title: 'Agents keep running',
-    body: 'Close the window and pick Keep running: terminal agents carry on in the background, a tray icon shows how many, and the next launch shows every pane exactly as it is.',
+    body: 'Close the window and pick Keep running: terminal agents carry on in a background host written in Rust (about 5 MB of memory while idle), a tray icon shows how many, and the next launch shows every pane exactly as it is.',
+    group: 'parallel',
   },
   {
     title: 'Drive panes from a script',
     body: 'Turn on Settings → Command line, then wraithgrid list, send, wait, read, new and split work from any terminal, or from an agent in another pane. wraithgrid attach watches one pane.',
+    group: 'ship',
   },
   {
     title: 'Run on another computer',
-    body: 'Add a machine from your ~/.ssh/config and a project runs its panes there over ssh, with the remote’s own CLIs and logins.',
+    body: 'Add a machine from your ~/.ssh/config and a project runs its panes there over ssh, with the remote’s own CLIs and logins. A Linux machine needs nothing installed: Wraithgrid copies its small host there once per version.',
+    group: 'ship',
   },
   {
     title: 'Claude mods',
     body: 'Panes draw what claude mods draw: side panes, a band above the prompt, status lines, toasts. The Mods screen searches the marketplaces, installs, updates and uninstalls for every account, and manages marketplaces.',
+    group: 'chat',
   },
   {
-    title: 'Git and worktrees',
-    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push, pull and open a pull request from the same panel. History shows every branch as a commit graph. Open a pane on a fresh branch in its own git worktree, and switch branches from its header.',
+    title: 'A branch per pane',
+    body: 'The top bar shows the focused pane’s branch and changed files; click it to commit, pull, push, switch branch, or start a new pane on a branch of its own, in its own git worktree. Ctrl+Shift+D opens the diff, with a pull request button. History shows every branch as a commit graph.',
+    group: 'ship',
   },
   {
     title: 'Projects and layouts',
     body: 'New project picks a folder, an account and a machine in one step. Each project has a screen with its open chats and History, so a closed chat carries on where it stopped. One pane, two, 2×2 or three columns; drag to resize or swap. The layout adapts down to a 640 px window.',
+    group: 'parallel',
   },
   {
     title: 'Know which pane needs you',
     body: 'Each pane shows working, needs you, done or idle, and the sidebar shows it per project. A desktop notification tells you when a pane you aren’t looking at finishes or asks.',
+    group: 'parallel',
   },
   {
     title: 'Search and paste',
     body: 'Ctrl+Shift+P finds any pane in any project or runs an app command. Copy a screenshot and press Ctrl+V in a pane: it is saved and pasted as a path the CLI can read, on Wayland too.',
+    group: 'parallel',
   },
   {
-    title: 'Nothing leaves your machine',
-    body: 'No telemetry. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one. Usage numbers come from what the CLI already reports.',
+    title: 'Your code stays yours',
+    body: 'No telemetry. Your free Wraithgrid account only signs you in; it never sees your agent logins, code or chats. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one.',
+    group: 'private',
   },
+]
+
+export interface Spotlight {
+  shot: ShotName
+  eyebrow: string
+  title: string
+  body: string
+  points: readonly string[]
+}
+
+/** The four screens the landing page explains in depth, each beside its screenshot. */
+export const SPOTLIGHTS: readonly Spotlight[] = [
+  {
+    shot: 'chat',
+    eyebrow: 'Chat',
+    title: 'A proper chat, with the official CLI underneath',
+    body: 'Claude Code, Codex and Antigravity open as a chat, like Claude or ChatGPT desktop. The official CLI still does the work, headless, with your account and folder.',
+    points: [
+      'Answers stream in word by word, with each step and its diff',
+      'Approve tools inline, and answer Claude’s questions one tab at a time',
+      'Model, effort and mode under the message box; Shift+Tab steps through modes',
+      'Type / for skills and commands, @ for files, or Reply to part of an answer',
+    ],
+  },
+  {
+    shot: 'usage',
+    eyebrow: 'Limits',
+    title: 'Hit a limit, and the chat moves on',
+    body: 'When a Claude or Codex account reaches its limit, the chat carries on as your next account of the same CLI, with the whole conversation.',
+    points: [
+      'Asks first, with both accounts’ use; or set it to switch on its own, or off',
+      'Each Claude account’s 5-hour and weekly use updates live, every 2 minutes',
+      'The Usage screen shows every account’s limits and when they reset',
+      'Costs per day, project and chat, at API prices',
+    ],
+  },
+  {
+    shot: 'scheduled',
+    eyebrow: 'Scheduled',
+    title: 'Agents that start while you’re away',
+    body: 'Start chats once, daily, on chosen days, every few hours, or the moment an account’s limit resets. Each job is a card with its next and last run.',
+    points: [
+      'Send later queues one message for when your limit resets',
+      'Runs missed by over an hour are recorded, not run late',
+      'With jobs on, closing the window keeps the tray icon so they still run',
+    ],
+  },
+  {
+    shot: 'diff',
+    eyebrow: 'Changes',
+    title: 'Review every change before it lands',
+    body: 'Press Ctrl+Shift+D for a pane’s git diff, then commit, push, pull and open a pull request from the same panel.',
+    points: [
+      'The top bar shows the focused pane’s branch and how many files changed',
+      'Run tasks side by side, each pane on its own branch in its own worktree',
+      'History shows every branch as a commit graph',
+    ],
+  },
+]
+
+export interface Step {
+  title: string
+  body: string
+}
+
+/** Getting started in three steps; the docs' Getting started page has the details. */
+export const STEPS: readonly Step[] = [
+  {
+    title: 'Add your accounts',
+    body: 'Sign in to Wraithgrid once, then add your agent accounts: one login of one CLI each, in its own folder under ~/.wraithgrid/accounts. Add account can reuse the login already in ~/.claude or ~/.codex.',
+  },
+  {
+    title: 'Open a project',
+    body: 'Pick a folder, the account its chats use and the machine it runs on: this computer, or one from your ~/.ssh/config.',
+  },
+  {
+    title: 'Run them side by side',
+    body: 'One pane, two, 2×2 or three columns. Each pane has its own account, folder and git branch, and shows when it needs you.',
+  },
+]
+
+/** The agent CLIs Wraithgrid runs, as named in the app. */
+export const AGENT_CLIS: readonly string[] = [
+  'Claude Code',
+  'Codex',
+  'Gemini CLI',
+  'Antigravity',
+  'opencode',
+  'Cursor Agent',
+  'Copilot CLI',
 ]
 
 export interface PaneExample {
@@ -213,6 +366,7 @@ export const SHORTCUTS: readonly { action: string; keys: readonly string[] }[] =
   { action: 'Paste a screenshot', keys: ['Ctrl', 'V'] },
   { action: 'New line in claude', keys: ['Shift', 'Enter'] },
   { action: 'Skills and commands in a chat', keys: ['/'] },
+  { action: 'Reply to the selected text', keys: ['Ctrl', 'Shift', 'R'] },
   { action: 'Next chat mode (ask, edits, plan, auto)', keys: ['Shift', 'Tab'] },
   { action: 'Zoom the whole app in / out', keys: ['Ctrl', '= / -'] },
   { action: 'Reset the zoom', keys: ['Ctrl', '0'] },
@@ -227,7 +381,11 @@ export interface Faq {
 export const FAQS: readonly Faq[] = [
   {
     q: 'Is Wraithgrid official?',
-    a: 'No. It is an independent open-source project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
+    a: 'No. It is an independent project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
+  },
+  {
+    q: 'Do I need a Wraithgrid account?',
+    a: 'Yes, since v2.4.0, and it is free: sign in or create one the first time you open the app (email and password with a 6-digit code, or Google or GitHub when offered). After that Wraithgrid opens as before, even offline. The account only signs you in; your Claude, Codex and other agent accounts stay separate, on your computer.',
   },
   {
     q: 'Does it see my login or my code?',
@@ -251,11 +409,11 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Can I carry on a chat on another account when I hit a limit?',
-    a: 'Yes. Since v1.18 a Claude or Codex chat moves to your next account of the same CLI on its own when its account reaches 95% of a limit (Settings → Chat sets 80/90/95/100%, or off), and a message the limit refused is sent again there. The account button under the message box → Continue as… does it by hand, and since v1.19 can hand the chat to another CLI too.',
+    a: 'Yes. When a Claude or Codex chat reaches its account’s limit, it asks before carrying on as your next account of the same CLI (since v1.25), showing both accounts’ use and what carries over; Settings → Switch account at limit sets Ask first, Automatically or Off. The account button under the message box → Continue as… does it by hand, to another CLI too.',
   },
   {
     q: 'Can I see how close I am to my Claude limits?',
-    a: 'Yes, since v1.11. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, as claude itself reports them after each chat turn, plus what chats cost per day, project and chat. Costs are at API prices; on Pro or Max you pay your plan. Terminal panes are not measured.',
+    a: 'Yes. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, plus what chats cost per day, project and chat. Since v1.25 they update on their own every 2 minutes, including use from claude.ai or another computer (not on macOS yet). Costs are at API prices; on Pro or Max you pay your plan.',
   },
   {
     q: 'Can agents work while I’m away?',
@@ -287,7 +445,7 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Is it free?',
-    a: 'Yes. Wraithgrid is free and open source under the MIT license.',
+    a: 'Yes. Wraithgrid is free to download and use, and open source under the MIT license: the source code is at github.com/cachewraith/wraithgrid-app. Download the app from the releases at github.com/cachewraith/wraithgrid, which only has published versions.',
   },
 ]
 

@@ -93,3 +93,67 @@ export function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
     <Svg size={20}>{dir === 'left' ? <path d="m15 5-7 7 7 7" /> : <path d="m9 5 7 7-7 7" />}</Svg>
   )
 }
+
+export function ArrowIcon() {
+  return (
+    <Svg size={16}>
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
+    </Svg>
+  )
+}
+
+export function MenuIcon({ open }: { open: boolean }) {
+  return (
+    <Svg size={20}>
+      {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+    </Svg>
+  )
+}
+
+/** One icon per feature group (content.ts FEATURE_GROUPS). */
+export function GroupIcon({ id }: { id: 'chat' | 'limits' | 'parallel' | 'ship' | 'private' }) {
+  switch (id) {
+    case 'chat':
+      return (
+        <Svg size={20}>
+          <path d="M20 12a7 7 0 0 1-10.2 6.2L4 20l1.8-5.8A7 7 0 1 1 20 12Z" />
+          <path d="M9 11h6M9 14h3.5" />
+        </Svg>
+      )
+    case 'limits':
+      return (
+        <Svg size={20}>
+          <path d="M4 17a8 8 0 1 1 16 0" />
+          <path d="m12 17 4-5" />
+          <path d="M4 20h16" />
+        </Svg>
+      )
+    case 'parallel':
+      return (
+        <Svg size={20}>
+          <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+          <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+          <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+          <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+        </Svg>
+      )
+    case 'ship':
+      return (
+        <Svg size={20}>
+          <circle cx="6" cy="5.5" r="2" />
+          <circle cx="6" cy="18.5" r="2" />
+          <circle cx="18" cy="8.5" r="2" />
+          <path d="M6 7.5v9" />
+          <path d="M18 10.5c0 4-6 3-11 6.5" />
+        </Svg>
+      )
+    case 'private':
+      return (
+        <Svg size={20}>
+          <path d="M12 3.5 5 6v5.5c0 4.3 3 7.6 7 9 4-1.4 7-4.7 7-9V6l-7-2.5Z" />
+          <path d="m9 12 2.2 2.2L15.5 10" />
+        </Svg>
+      )
+  }
+}
