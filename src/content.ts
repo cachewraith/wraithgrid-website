@@ -140,18 +140,23 @@ export const FEATURES: readonly Feature[] = [
     group: 'chat',
   },
   {
+    title: 'Reply to any part',
+    body: 'Select text in a chat message and click Reply: it goes above the message box as a quote, and the sent message shows each quote as its own card with Show in chat. Type @ to pick a project file or folder, and ↑ brings back the prompts you sent.',
+    group: 'chat',
+  },
+  {
     title: 'Skills with /',
     body: 'Type / in a chat to list that account’s skills and commands, with what each does. Pick one with the arrow keys and Enter.',
     group: 'chat',
   },
   {
     title: 'Never stuck at a limit',
-    body: 'When a Claude or Codex chat’s account reaches its limit, the chat carries on as your next account of the same CLI, with the whole conversation. Or pick one yourself under the message box, even another CLI: you see the handoff before anything changes.',
+    body: 'When a Claude or Codex chat’s account reaches its limit, it offers your next account of the same CLI, with both accounts’ use and what carries over, then goes on there with the whole conversation. Or let it switch on its own, or pick one yourself under the message box, even another CLI.',
     group: 'limits',
   },
   {
     title: 'Usage and limits',
-    body: 'The sidebar shows the account new chats use, with its 5-hour and weekly meters and where it switches next. The Usage screen shows every account’s limits, when they reset, and what your chats cost per day, project and chat.',
+    body: 'Each Claude account’s 5-hour and weekly use updates on its own every 2 minutes, including use from claude.ai or another computer (not on macOS yet). The Usage screen shows every account’s limits, when they reset, and what your chats cost per day, project and chat.',
     group: 'limits',
   },
   {
@@ -181,12 +186,12 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Logins stay separate',
-    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. Instructions and skills can still be one per provider: one CLAUDE.md for every claude account, one AGENTS.md for every codex account.',
+    body: 'Every account gets its own config folder, so claude and gemini logins and history never touch another account. The Accounts page groups them in folders, and Add account signs in or reuses the login already in ~/.claude or ~/.codex. Instructions and skills can still be one per provider.',
     group: 'private',
   },
   {
     title: 'Agents keep running',
-    body: 'Close the window and pick Keep running: terminal agents carry on in the background, a tray icon shows how many, and the next launch shows every pane exactly as it is.',
+    body: 'Close the window and pick Keep running: terminal agents carry on in a background host written in Rust (about 5 MB of memory while idle), a tray icon shows how many, and the next launch shows every pane exactly as it is.',
     group: 'parallel',
   },
   {
@@ -196,7 +201,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     title: 'Run on another computer',
-    body: 'Add a machine from your ~/.ssh/config and a project runs its panes there over ssh, with the remote’s own CLIs and logins.',
+    body: 'Add a machine from your ~/.ssh/config and a project runs its panes there over ssh, with the remote’s own CLIs and logins. A Linux machine needs nothing installed: Wraithgrid copies its small host there once per version.',
     group: 'ship',
   },
   {
@@ -205,8 +210,8 @@ export const FEATURES: readonly Feature[] = [
     group: 'chat',
   },
   {
-    title: 'Git and worktrees',
-    body: 'Press Ctrl+Shift+D for a pane’s diff, then commit, push, pull and open a pull request from the same panel. History shows every branch as a commit graph. Open a pane on a fresh branch in its own git worktree, and switch branches from its header.',
+    title: 'A branch per pane',
+    body: 'The top bar shows the focused pane’s branch and changed files; click it to commit, pull, push, switch branch, or start a new pane on a branch of its own, in its own git worktree. Ctrl+Shift+D opens the diff, with a pull request button. History shows every branch as a commit graph.',
     group: 'ship',
   },
   {
@@ -225,8 +230,8 @@ export const FEATURES: readonly Feature[] = [
     group: 'parallel',
   },
   {
-    title: 'Nothing leaves your machine',
-    body: 'No telemetry. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one. Usage numbers come from what the CLI already reports.',
+    title: 'Your code stays yours',
+    body: 'No telemetry. Your free Wraithgrid account only signs you in; it never sees your agent logins, code or chats. Wraithgrid never reads, copies or proxies what is inside the account folders; it only points each CLI at one.',
     group: 'private',
   },
 ]
@@ -248,9 +253,9 @@ export const SPOTLIGHTS: readonly Spotlight[] = [
     body: 'Claude Code, Codex and Antigravity open as a chat, like Claude or ChatGPT desktop. The official CLI still does the work, headless, with your account and folder.',
     points: [
       'Answers stream in word by word, with each step and its diff',
-      'Approve tools inline, and pick from Claude’s questions as options',
+      'Approve tools inline, and answer Claude’s questions one tab at a time',
       'Model, effort and mode under the message box; Shift+Tab steps through modes',
-      'Type / for the account’s skills and commands, with what each does',
+      'Type / for skills and commands, @ for files, or Reply to part of an answer',
     ],
   },
   {
@@ -259,8 +264,8 @@ export const SPOTLIGHTS: readonly Spotlight[] = [
     title: 'Hit a limit, and the chat moves on',
     body: 'When a Claude or Codex account reaches its limit, the chat carries on as your next account of the same CLI, with the whole conversation.',
     points: [
-      'Switches at 95% by default; Settings → Chat sets 80, 90, 95 or 100%, or off',
-      'The sidebar shows the 5-hour and weekly meters of the account new chats use',
+      'Asks first, with both accounts’ use; or set it to switch on its own, or off',
+      'Each Claude account’s 5-hour and weekly use updates live, every 2 minutes',
       'The Usage screen shows every account’s limits and when they reset',
       'Costs per day, project and chat, at API prices',
     ],
@@ -282,8 +287,8 @@ export const SPOTLIGHTS: readonly Spotlight[] = [
     title: 'Review every change before it lands',
     body: 'Press Ctrl+Shift+D for a pane’s git diff, then commit, push, pull and open a pull request from the same panel.',
     points: [
-      'Open a pane on a fresh branch in its own git worktree',
-      'Switch branches from the pane’s header',
+      'The top bar shows the focused pane’s branch and how many files changed',
+      'Run tasks side by side, each pane on its own branch in its own worktree',
       'History shows every branch as a commit graph',
     ],
   },
@@ -298,7 +303,7 @@ export interface Step {
 export const STEPS: readonly Step[] = [
   {
     title: 'Add your accounts',
-    body: 'One login of one CLI per account, each with its own config folder under ~/.wraithgrid/accounts. Import ~/.claude keeps a login you already have, without copying it.',
+    body: 'Sign in to Wraithgrid once, then add your agent accounts: one login of one CLI each, in its own folder under ~/.wraithgrid/accounts. Add account can reuse the login already in ~/.claude or ~/.codex.',
   },
   {
     title: 'Open a project',
@@ -361,6 +366,7 @@ export const SHORTCUTS: readonly { action: string; keys: readonly string[] }[] =
   { action: 'Paste a screenshot', keys: ['Ctrl', 'V'] },
   { action: 'New line in claude', keys: ['Shift', 'Enter'] },
   { action: 'Skills and commands in a chat', keys: ['/'] },
+  { action: 'Reply to the selected text', keys: ['Ctrl', 'Shift', 'R'] },
   { action: 'Next chat mode (ask, edits, plan, auto)', keys: ['Shift', 'Tab'] },
   { action: 'Zoom the whole app in / out', keys: ['Ctrl', '= / -'] },
   { action: 'Reset the zoom', keys: ['Ctrl', '0'] },
@@ -376,6 +382,10 @@ export const FAQS: readonly Faq[] = [
   {
     q: 'Is Wraithgrid official?',
     a: 'No. It is an independent project, not affiliated with Anthropic, Google, OpenAI, GitHub or Cursor. It runs the official agent CLIs unchanged.',
+  },
+  {
+    q: 'Do I need a Wraithgrid account?',
+    a: 'Yes, since v2.4.0, and it is free: sign in or create one the first time you open the app (email and password with a 6-digit code, or Google or GitHub when offered). After that Wraithgrid opens as before, even offline. The account only signs you in; your Claude, Codex and other agent accounts stay separate, on your computer.',
   },
   {
     q: 'Does it see my login or my code?',
@@ -399,11 +409,11 @@ export const FAQS: readonly Faq[] = [
   },
   {
     q: 'Can I carry on a chat on another account when I hit a limit?',
-    a: 'Yes. Since v1.18 a Claude or Codex chat moves to your next account of the same CLI on its own when its account reaches 95% of a limit (Settings → Chat sets 80/90/95/100%, or off), and a message the limit refused is sent again there. The account button under the message box → Continue as… does it by hand, and since v1.19 can hand the chat to another CLI too.',
+    a: 'Yes. When a Claude or Codex chat reaches its account’s limit, it asks before carrying on as your next account of the same CLI (since v1.25), showing both accounts’ use and what carries over; Settings → Switch account at limit sets Ask first, Automatically or Off. The account button under the message box → Continue as… does it by hand, to another CLI too.',
   },
   {
     q: 'Can I see how close I am to my Claude limits?',
-    a: 'Yes, since v1.11. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, as claude itself reports them after each chat turn, plus what chats cost per day, project and chat. Costs are at API prices; on Pro or Max you pay your plan. Terminal panes are not measured.',
+    a: 'Yes. The Usage screen (in the sidebar, or /usage in a chat) shows each account’s current session and weekly limits and when they reset, plus what chats cost per day, project and chat. Since v1.25 they update on their own every 2 minutes, including use from claude.ai or another computer (not on macOS yet). Costs are at API prices; on Pro or Max you pay your plan.',
   },
   {
     q: 'Can agents work while I’m away?',

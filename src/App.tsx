@@ -17,6 +17,7 @@ import { docFromPath } from './lib/docs'
 import { initNavigation } from './lib/navigation'
 import { useReleaseInfo } from './hooks/useRelease'
 import { useTheme } from './hooks/useTheme'
+import { useUserCount } from './hooks/useUserCount'
 import { detectOS, type OS } from './lib/os'
 
 const noSubscribe = () => () => undefined
@@ -31,6 +32,7 @@ export function App({ path }: Props) {
   const os = useSyncExternalStore(noSubscribe, detectOS, (): OS => 'other')
   const info = useReleaseInfo()
   const release = info?.latest ?? null
+  const users = useUserCount()
   const theme = useTheme()
   useEffect(initNavigation, [])
   const doc = docFromPath(path, import.meta.env.BASE_URL, DOCS)
@@ -56,7 +58,7 @@ export function App({ path }: Props) {
       </a>
       <Nav themeMode={theme.mode} onThemeChange={theme.setMode} />
       <main id="main" tabIndex={-1}>
-        <Hero os={os} release={release} downloads={info?.totalDownloads ?? null} />
+        <Hero os={os} release={release} downloads={info?.totalDownloads ?? null} users={users} />
         <HowItWorks />
         <Spotlights />
         <Features />

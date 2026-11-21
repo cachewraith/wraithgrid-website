@@ -2,6 +2,7 @@ import { AGENT_CLIS, HERO_ALT } from '../content'
 import type { OS } from '../lib/os'
 import { REPO_URL, RELEASES_URL, downloadHref, formatDownloads, type Release } from '../lib/release'
 import { docsPath } from '../lib/docs'
+import { formatUsers } from '../lib/stats'
 import { sectionPath } from '../lib/sections'
 import { ExternalLink } from './ExternalLink'
 import { ArrowIcon, DownloadIcon } from './icons'
@@ -12,6 +13,8 @@ interface Props {
   release: Release | null
   /** Installer downloads over all releases; null while loading or when GitHub can't be read. */
   downloads: number | null
+  /** People with a Wraithgrid account; null while loading or when the server can't be read. */
+  users: number | null
 }
 
 const BASE = import.meta.env.BASE_URL
@@ -36,7 +39,7 @@ export function PrimaryDownload({ os, release }: Pick<Props, 'os' | 'release'>) 
   )
 }
 
-export function Hero({ os, release, downloads }: Props) {
+export function Hero({ os, release, downloads, users }: Props) {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero-bg" aria-hidden="true" />
@@ -79,6 +82,9 @@ export function Hero({ os, release, downloads }: Props) {
             <span title="Installer downloads across every release, from GitHub">
               {formatDownloads(downloads)}
             </span>
+          )}
+          {users !== null && users > 0 && (
+            <span title="People with a Wraithgrid account">{formatUsers(users)}</span>
           )}
         </p>
       </div>

@@ -1,5 +1,5 @@
 /**
- * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v1.23);
+ * The docs pages. Facts come from the app (README, docs/WHATS-NEW.md, docs/THEMES.md, v2.4.0);
  * don't add any the app doesn't have. Inline text: `code`, **bold**, [label](/path), ⟦key⟧.
  */
 import type { DocPage } from '../lib/docs'
@@ -11,7 +11,7 @@ export const DOCS: readonly DocPage[] = [
     nav: 'Getting started',
     title: 'Getting started with Wraithgrid',
     description:
-      'Install Wraithgrid, add an account, open a project and start your first chat with Claude Code, Codex, Gemini CLI or another agent CLI.',
+      'Install Wraithgrid, sign in, add an account, open a project and start your first chat with Claude Code, Codex, Gemini CLI or another agent CLI.',
     sections: [
       {
         id: 'install',
@@ -33,21 +33,43 @@ export const DOCS: readonly DocPage[] = [
         ],
       },
       {
+        id: 'sign-in',
+        title: 'Sign in to Wraithgrid',
+        blocks: [
+          {
+            p: 'The first time you open Wraithgrid (since v2.4.0) it asks you to sign in or create a free Wraithgrid account. After that it opens as before, even offline, and your agents keep running while you sign in.',
+          },
+          {
+            list: [
+              '**Create an account**: your name, email and a password, then the 6-digit code we email you. Type or paste it into the boxes; it confirms on its own. **Send a new one** if it didn’t arrive.',
+              '**Sign in** with your email and password, or **Continue with Google** or **GitHub** when the server offers them (it opens your browser).',
+              '**Forgot password**: your email, the code from the email, then a new password. Your other computers are signed out.',
+            ],
+          },
+          {
+            p: 'The bottom-left button of the sidebar shows your name and plan; its menu has **Sign out**. **Settings → General** changes your name or password.',
+          },
+          {
+            note: 'Your Wraithgrid account is separate from your agent accounts: Claude, Codex and the rest keep their own logins, on your computer.',
+          },
+        ],
+      },
+      {
         id: 'account',
         title: 'Add an account',
         blocks: [
           {
-            p: 'An account is one login of one CLI, with its own config folder under `~/.wraithgrid/accounts`. Personal, work and client accounts can all be signed in at once.',
+            p: 'An agent account is one login of one CLI, with its own config folder under `~/.wraithgrid/accounts`. Personal, work and client accounts can all be signed in at once.',
           },
           {
             steps: [
-              'Click the account button at the bottom of the sidebar, then **New account**.',
-              'Pick a name and the **CLI** it runs. To keep a login you already have, use **Import ~/.claude** instead: nothing is copied.',
-              'Press **Login**. For claude and codex a dialog runs the CLI’s own sign-in: for claude, open the sign-in page and paste the code if it shows one; for codex, enter the one-time code on the page. Other CLIs sign in from a terminal the first time a pane starts.',
+              'Open the **Accounts** page and press **Add account**.',
+              'Pick the provider, then sign in. To keep a login you already have, reuse the one in `~/.claude` or `~/.codex` (or any folder): nothing is copied. For claude and codex the sign-in runs in a dialog; other CLIs sign in from a terminal the first time a pane starts.',
+              'Confirm the name, filled in from your email. Leaving before this step adds nothing.',
             ],
           },
           {
-            p: 'The account you pick in that menu is the one new chats use. **Manage accounts** opens the Accounts page, where you can also group accounts into folders.',
+            p: 'The bottom-left menu of the sidebar picks the account new chats use. On the Accounts page, drag a row onto a folder heading to group it; click a row for its name, color, folder and config folder.',
           },
         ],
       },
@@ -103,9 +125,11 @@ export const DOCS: readonly DocPage[] = [
           {
             list: [
               'Paste a screenshot with ⟦Ctrl⟧ ⟦V⟧, or attach files with the paperclip or by dropping them (up to 20): images go as images, other files as paths claude reads.',
-              'At a limit, a Claude or Codex chat carries on as your next account of the same CLI, with the whole conversation (**Settings → Chat → Switch account at limit**). The account button under the message box → **Continue as…** does it by hand, to another CLI too.',
+              'Type `@` to pick a file or folder of the project; ⟦Enter⟧ or ⟦Tab⟧ inserts its path. ⟦↑⟧ and ⟦↓⟧ in an empty box step through the prompts you sent in that chat.',
+              'Select text in a message and click **Reply** (⟦Ctrl⟧ ⟦Shift⟧ ⟦R⟧): it is added above the message box as a quote, up to 5. The sent message shows each quote as a card; **Show in chat** scrolls to where it came from.',
+              'At a limit, a Claude or Codex chat asks before carrying on as your next account of the same CLI, with the whole conversation: **Switch** or **Stay** (**Settings → Switch account at limit**: Ask first, Automatically or Off). The account button under the message box → **Continue as…** does it by hand, to another CLI too.',
               'The clock button next to Send queues the message for when your limit resets, in an hour, tomorrow morning or at a time you pick: **Send later**.',
-              'When Claude asks you something, the chat shows the options to pick, or write your own answer.',
+              'When Claude asks you something, the chat shows the options to pick, or write your own answer. Several questions come as one card with a tab each; number keys pick an option.',
               'Stop a turn with **Stop** or ⟦Esc⟧. A message sent while one runs waits its turn.',
               'Start over from the pane’s ⋯ menu, or `/new`.',
             ],
@@ -172,8 +196,8 @@ export const DOCS: readonly DocPage[] = [
                 ],
                 ['Don’t ask', 'Refuses anything that is not already allowed.'],
                 [
-                  'Bypass permissions',
-                  'Runs everything without asking. Takes a second click, and is never a default.',
+                  'Full access',
+                  'Runs everything without asking. Per chat only, takes a second click, and is never a default.',
                 ],
               ],
             },
@@ -478,7 +502,7 @@ export const DOCS: readonly DocPage[] = [
             p: 'For each claude account: **Current session** and **Weekly**, each as a bar with the % used and when it resets. Bars are grey, amber from 70%, red from 90% with “almost out”.',
           },
           {
-            note: 'These numbers are what claude itself reports after each chat turn, so an account shows its limits after its first chat turn, and they are as of its last one.',
+            note: 'Since v1.25 these update on their own every 2 minutes while Wraithgrid is open, including use from claude.ai or another computer, using the account’s own sign-in, only with Anthropic. On macOS they are still what claude reports after each chat turn.',
           },
         ],
       },
@@ -571,7 +595,7 @@ export const DOCS: readonly DocPage[] = [
         title: 'Agents that keep running',
         blocks: [
           {
-            p: 'Terminal panes run in a small background process, not in the window. Close the window with agents running and pick **Keep running**: a tray icon shows how many, and opening Wraithgrid again shows every pane as it is now. **Stop all agents and quit** in the tray, or **Settings → General → When the window closes**, changes that.',
+            p: 'Terminal panes run in a small background host written in Rust (about 5 MB of memory while idle), not in the window. Close the window with agents running and pick **Keep running**: a tray icon shows how many, and opening Wraithgrid again shows every pane as it is now. **Stop all agents and quit** in the tray, or **Settings → General → When the window closes**, changes that.',
           },
         ],
       },
@@ -606,7 +630,7 @@ wraithgrid stop                        # stop every agent`,
             p: 'Add a computer under **Settings → Advanced → Machines** (a host from `~/.ssh/config`, or `user@host`; **Test** checks it), then right-click an empty project → **Run on …**. Its panes start there with that computer’s CLIs, folders and logins, and keep running when you disconnect.',
           },
           {
-            note: 'The other computer needs Wraithgrid installed with `wraithgrid` on its PATH, and ssh that logs in with a key or an agent.',
+            note: 'The other computer needs ssh that logs in with a key or an agent. A Linux machine needs nothing else: Wraithgrid copies its host there once per version and removes versions unused for 30 days.',
           },
         ],
       },
